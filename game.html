@@ -1,0 +1,373 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>لعبة SELF ADS — اكسب كود خصم | SELF ADS</title>
+  <style>
+    :root {
+      --bg: #f4f6fb; --surface: #fff; --text: #1a2233; --muted: #5c667a; --border: #dde3ef;
+      --accent: #4f6ef7; --accent-soft: #e8edff; --accent-2: #7c5cbf;
+      --success: #0d9f6e; --success-soft: #e6f7f1;
+      --danger: #dc4c4c; --danger-soft: #fdecec;
+      --gold: #d97706; --gold-soft: #fef3c7;
+      --radius: 18px; --radius-sm: 12px;
+      --shadow: 0 8px 32px rgba(26,34,51,0.08);
+    }
+    * { box-sizing: border-box; margin: 0; padding: 0; }
+    html { scroll-behavior: smooth; }
+    body {
+      font-family: "Segoe UI", Tahoma, Arial, sans-serif;
+      background: var(--bg); color: var(--text); line-height: 1.8; min-height: 100vh;
+    }
+    body::before {
+      content: ""; position: fixed; inset: 0;
+      background:
+        radial-gradient(ellipse 60% 50% at 20% 0%, rgba(79,110,247,0.1), transparent),
+        radial-gradient(ellipse 50% 40% at 90% 10%, rgba(217,119,6,0.08), transparent);
+      pointer-events: none; z-index: 0;
+    }
+    .page { position: relative; z-index: 1; max-width: 640px; margin: 0 auto; padding: 1.25rem 1.25rem 3rem; }
+    .top-nav {
+      display: flex; flex-wrap: wrap; align-items: center; justify-content: space-between;
+      gap: 0.75rem; margin-bottom: 1.5rem; padding-bottom: 1rem; border-bottom: 1px solid var(--border);
+    }
+    .back-link {
+      font-size: 0.88rem; font-weight: 600; text-decoration: none; color: var(--muted);
+      padding: 0.4rem 0.75rem; border-radius: 99px; transition: all 0.2s;
+    }
+    .back-link:hover { color: var(--accent); background: var(--accent-soft); }
+    .game-hero {
+      text-align: center; background: linear-gradient(135deg, var(--surface), #fffbeb);
+      border: 2px solid #fcd34d; border-radius: var(--radius); padding: 2rem 1.5rem;
+      margin-bottom: 1.5rem; box-shadow: var(--shadow);
+    }
+    .game-badge {
+      display: inline-block; background: linear-gradient(135deg, #d97706, #f59e0b);
+      color: #fff; font-size: 0.78rem; font-weight: 700; padding: 0.3rem 0.85rem;
+      border-radius: 99px; margin-bottom: 0.75rem;
+    }
+    .game-hero h1 { font-size: clamp(1.35rem, 4vw, 1.75rem); font-weight: 800; margin-bottom: 0.5rem; }
+    .game-hero p { color: var(--muted); font-size: 0.92rem; max-width: 480px; margin: 0 auto; }
+    .prize-tag {
+      display: inline-block; margin-top: 1rem; font-size: 0.82rem; font-weight: 700;
+      background: var(--gold-soft); color: #92400e; padding: 0.35rem 0.9rem; border-radius: 99px;
+    }
+    .game-board {
+      background: var(--surface); border: 1px solid var(--border); border-radius: var(--radius);
+      padding: 1.5rem 1.25rem; box-shadow: var(--shadow); margin-bottom: 1.25rem;
+    }
+    .game-label {
+      text-align: center; font-size: 0.88rem; font-weight: 700; color: var(--muted); margin-bottom: 0.85rem;
+    }
+    .slots-row {
+      display: flex; flex-wrap: wrap; justify-content: center; gap: 0.45rem;
+      margin-bottom: 1.5rem; direction: ltr;
+    }
+    .slot {
+      width: 52px; height: 58px; border: 2px dashed var(--border); border-radius: 12px;
+      display: grid; place-items: center; font-size: 1.35rem; font-weight: 800;
+      background: var(--bg); cursor: pointer; transition: all 0.2s;
+      color: var(--text);
+    }
+    .slot.filled { border-style: solid; border-color: var(--accent); background: var(--accent-soft); }
+    .slot.gap { width: 12px; border: none; background: transparent; cursor: default; font-size: 0.7rem; color: var(--muted); }
+    .letters-pool {
+      display: flex; flex-wrap: wrap; justify-content: center; gap: 0.55rem;
+      margin-bottom: 1.25rem; direction: ltr; min-height: 58px;
+    }
+    .letter-tile {
+      width: 52px; height: 58px; border: none; border-radius: 12px;
+      font-size: 1.35rem; font-weight: 800; color: #fff; cursor: pointer;
+      box-shadow: 0 4px 14px rgba(0,0,0,0.15); transition: transform 0.2s, opacity 0.2s;
+    }
+    .letter-tile:hover:not(:disabled) { transform: translateY(-4px) scale(1.05); }
+    .letter-tile:disabled { opacity: 0; pointer-events: none; transform: scale(0.5); }
+    .letter-tile[data-char="S"] { background: linear-gradient(135deg, #4f6ef7, #7c5cbf); }
+    .letter-tile[data-char="E"] { background: linear-gradient(135deg, #0d9f6e, #34c38f); }
+    .letter-tile[data-char="L"] { background: linear-gradient(135deg, #d97706, #f59e0b); }
+    .letter-tile[data-char="F"] { background: linear-gradient(135deg, #7c5cbf, #a78bfa); }
+    .letter-tile[data-char="A"] { background: linear-gradient(135deg, #dc4c4c, #f87171); }
+    .letter-tile[data-char="D"] { background: linear-gradient(135deg, #0891b2, #22d3ee); }
+    .game-actions {
+      display: flex; flex-wrap: wrap; justify-content: center; gap: 0.6rem;
+    }
+    .game-btn {
+      font-family: inherit; font-size: 0.88rem; font-weight: 700;
+      padding: 0.65rem 1.2rem; border-radius: 99px; border: none; cursor: pointer;
+      transition: transform 0.2s;
+    }
+    .game-btn:hover { transform: translateY(-2px); }
+    .game-btn-check {
+      background: linear-gradient(135deg, var(--accent), var(--accent-2)); color: #fff;
+      box-shadow: 0 6px 20px rgba(79,110,247,0.35);
+    }
+    .game-btn-check:disabled { opacity: 0.4; cursor: not-allowed; transform: none; }
+    .game-btn-secondary {
+      background: var(--surface); color: var(--muted); border: 2px solid var(--border);
+    }
+    .game-msg {
+      text-align: center; font-size: 0.92rem; font-weight: 700; margin-top: 1rem; min-height: 1.4rem;
+    }
+    .game-msg.error { color: var(--danger); }
+    .game-msg.hint { color: var(--muted); font-weight: 600; }
+    .win-panel {
+      display: none; text-align: center; background: linear-gradient(135deg, #ecfdf5, #d1fae5);
+      border: 2px solid #6ee7b7; border-radius: var(--radius); padding: 2rem 1.5rem;
+      margin-bottom: 1.25rem; animation: pop 0.4s ease;
+    }
+    .win-panel.show { display: block; }
+    @keyframes pop {
+      from { opacity: 0; transform: scale(0.95); }
+      to { opacity: 1; transform: scale(1); }
+    }
+    .win-panel .trophy { font-size: 3rem; margin-bottom: 0.5rem; }
+    .win-panel h2 { font-size: 1.25rem; font-weight: 800; color: #065f46; margin-bottom: 0.35rem; }
+    .win-panel p { color: #047857; font-size: 0.9rem; margin-bottom: 1rem; }
+    .code-box {
+      display: inline-flex; align-items: center; gap: 0.65rem;
+      background: #fff; border: 2px dashed #10b981; border-radius: var(--radius-sm);
+      padding: 0.85rem 1.25rem; margin-bottom: 1rem;
+    }
+    .code-box code {
+      font-size: 1.35rem; font-weight: 800; letter-spacing: 0.08em;
+      color: #065f46; direction: ltr;
+    }
+    .copy-btn {
+      font-family: inherit; font-size: 0.82rem; font-weight: 700;
+      padding: 0.45rem 0.9rem; border-radius: 99px; border: none;
+      background: var(--success); color: #fff; cursor: pointer;
+    }
+    .copy-btn.copied { background: #047857; }
+    .meaning-grid {
+      display: grid; grid-template-columns: repeat(auto-fill, minmax(130px, 1fr));
+      gap: 0.5rem; margin-top: 1rem; text-align: right;
+    }
+    .meaning-item {
+      background: rgba(255,255,255,0.7); border-radius: 10px; padding: 0.5rem 0.65rem;
+      font-size: 0.78rem; color: #065f46;
+    }
+    .meaning-item strong { color: #047857; direction: ltr; display: inline-block; }
+    .game-board.shake { animation: shake 0.45s ease; }
+    @keyframes shake {
+      0%, 100% { transform: translateX(0); }
+      25% { transform: translateX(-6px); }
+      75% { transform: translateX(6px); }
+    }
+    .footer-note { text-align: center; margin-top: 1.5rem; font-size: 0.85rem; color: var(--muted); }
+    .footer-note a { color: var(--accent); text-decoration: none; font-weight: 600; }
+    @media (max-width: 400px) {
+      .slot, .letter-tile { width: 44px; height: 50px; font-size: 1.15rem; }
+    }
+  </style>
+</head>
+<body>
+  <div class="page">
+    <nav class="top-nav">
+      <a href="index.html" class="back-link">← الدليل الرئيسي</a>
+    </nav>
+
+    <header class="game-hero">
+      <span class="game-badge">🎮 لعبة + مكافأة</span>
+      <h1>رتّب حروف SELF ADS</h1>
+      <p>الحروف قدامك مش مرتبة — رتّبها بالترتيب الصحيح واكسب <strong>كود خصم إضافي</strong>.</p>
+      <span class="prize-tag">🎁 جائزة: خصم إضافي عند الترتيب الصح</span>
+    </header>
+
+    <div class="win-panel" id="winPanel">
+      <div class="trophy">🏆</div>
+      <h2>مبروك! رتّبت SELF ADS صح</h2>
+      <p>ده كود الخصم الإضافي — انسخه واستخدمه:</p>
+      <div class="code-box">
+        <code id="discountCode">SELFADS-EXTRA</code>
+        <button type="button" class="copy-btn" id="copyBtn">نسخ</button>
+      </div>
+      <div class="meaning-grid">
+        <div class="meaning-item"><strong>S</strong> — Subject موضوع</div>
+        <div class="meaning-item"><strong>E</strong> — Environment بيئة</div>
+        <div class="meaning-item"><strong>L</strong> — Lighting إضاءة</div>
+        <div class="meaning-item"><strong>F</strong> — Framing لقطة</div>
+        <div class="meaning-item"><strong>A</strong> — Aspect أبعاد</div>
+        <div class="meaning-item"><strong>D</strong> — Details تفاصيل</div>
+        <div class="meaning-item"><strong>S</strong> — Style ستايل</div>
+      </div>
+    </div>
+
+    <div class="game-board" id="gameBoard">
+      <p class="game-label">اضغط الحروف بالترتيب الصح ←</p>
+      <div class="slots-row" id="slotsRow" aria-label="خانات الترتيب"></div>
+      <p class="game-label">الحروف المتاحة</p>
+      <div class="letters-pool" id="lettersPool"></div>
+      <div class="game-actions">
+        <button type="button" class="game-btn game-btn-check" id="checkBtn" disabled>✓ تحقق</button>
+        <button type="button" class="game-btn game-btn-secondary" id="clearBtn">↺ امسح</button>
+        <button type="button" class="game-btn game-btn-secondary" id="shuffleBtn">🔀 اخلط</button>
+      </div>
+      <p class="game-msg hint" id="gameMsg">اضغط على الحرف، أو اضغط خانة فاضية عشان ترجّع الحرف</p>
+    </div>
+
+    <p class="footer-note">
+      <a href="index.html">الدليل الرئيسي</a> ·
+      <a href="tool.html">الأداة</a> ·
+      <a href="master-prompt.html">Master Prompt</a>
+    </p>
+  </div>
+
+  <script>
+    const DISCOUNT_CODE = "SELFADS-EXTRA";
+    const TARGET = ["S", "E", "L", "F", "A", "D", "S"];
+    const LETTERS = [
+      { id: "s1", char: "S" },
+      { id: "e", char: "E" },
+      { id: "l", char: "L" },
+      { id: "f", char: "F" },
+      { id: "a", char: "A" },
+      { id: "d", char: "D" },
+      { id: "s2", char: "S" }
+    ];
+
+    let slots = [];
+    let won = false;
+
+    const slotsRow = document.getElementById("slotsRow");
+    const lettersPool = document.getElementById("lettersPool");
+    const checkBtn = document.getElementById("checkBtn");
+    const gameMsg = document.getElementById("gameMsg");
+    const gameBoard = document.getElementById("gameBoard");
+    const winPanel = document.getElementById("winPanel");
+
+    function shuffle(arr) {
+      const a = [...arr];
+      for (let i = a.length - 1; i > 0; i--) {
+        const j = Math.floor(Math.random() * (i + 1));
+        [a[i], a[j]] = [a[j], a[i]];
+      }
+      return a;
+    }
+
+    function buildSlotsUI() {
+      slotsRow.innerHTML = "";
+      TARGET.forEach((_, i) => {
+        if (i === 4) {
+          const gap = document.createElement("span");
+          gap.className = "slot gap";
+          gap.textContent = "·";
+          gap.setAttribute("aria-hidden", "true");
+          slotsRow.appendChild(gap);
+        }
+        const slot = document.createElement("button");
+        slot.type = "button";
+        slot.className = "slot";
+        slot.dataset.index = i;
+        slot.addEventListener("click", () => clearSlot(i));
+        slotsRow.appendChild(slot);
+      });
+    }
+
+    function renderPool(order) {
+      lettersPool.innerHTML = "";
+      order.forEach(letter => {
+        const used = slots.some(s => s && s.id === letter.id);
+        const btn = document.createElement("button");
+        btn.type = "button";
+        btn.className = "letter-tile";
+        btn.dataset.char = letter.char;
+        btn.dataset.id = letter.id;
+        btn.textContent = letter.char;
+        btn.disabled = used;
+        if (!used) btn.addEventListener("click", () => pickLetter(letter));
+        lettersPool.appendChild(btn);
+      });
+    }
+
+    function renderSlots() {
+      const slotEls = slotsRow.querySelectorAll(".slot:not(.gap)");
+      slotEls.forEach((el, i) => {
+        const item = slots[i];
+        el.textContent = item ? item.char : "";
+        el.classList.toggle("filled", !!item);
+      });
+      checkBtn.disabled = slots.filter(Boolean).length !== TARGET.length || won;
+    }
+
+    function pickLetter(letter) {
+      if (won) return;
+      const empty = slots.findIndex(s => !s);
+      if (empty === -1) return;
+      slots[empty] = letter;
+      renderSlots();
+      renderPool(shuffledOrder);
+      gameMsg.className = "game-msg hint";
+      gameMsg.textContent = `${TARGET.length - slots.filter(Boolean).length} حروف باقية`;
+    }
+
+    function clearSlot(index) {
+      if (won || !slots[index]) return;
+      slots[index] = null;
+      renderSlots();
+      renderPool(shuffledOrder);
+      gameMsg.className = "game-msg hint";
+      gameMsg.textContent = "اضغط على الحرف، أو اضغط خانة عشان ترجّع الحرف";
+    }
+
+    function clearAll() {
+      if (won) return;
+      slots = TARGET.map(() => null);
+      renderSlots();
+      renderPool(shuffledOrder);
+      gameMsg.className = "game-msg hint";
+      gameMsg.textContent = "تم المسح — جرّب تاني";
+    }
+
+    function checkAnswer() {
+      if (won) return;
+      const answer = slots.map(s => s ? s.char : "");
+      const correct = answer.every((c, i) => c === TARGET[i]);
+      if (correct) {
+        won = true;
+        winPanel.classList.add("show");
+        gameBoard.style.display = "none";
+        document.getElementById("discountCode").textContent = DISCOUNT_CODE;
+        return;
+      }
+      gameBoard.classList.add("shake");
+      setTimeout(() => gameBoard.classList.remove("shake"), 450);
+      gameMsg.className = "game-msg error";
+      gameMsg.textContent = "❌ الترتيب مش صح — حاول تاني!";
+    }
+
+    let shuffledOrder = shuffle(LETTERS);
+
+    function reshuffle() {
+      if (won) return;
+      clearAll();
+      shuffledOrder = shuffle(LETTERS);
+      renderPool(shuffledOrder);
+    }
+
+    document.getElementById("copyBtn").addEventListener("click", async () => {
+      const btn = document.getElementById("copyBtn");
+      try {
+        await navigator.clipboard.writeText(DISCOUNT_CODE);
+        btn.textContent = "تم النسخ ✓";
+        btn.classList.add("copied");
+        setTimeout(() => {
+          btn.textContent = "نسخ";
+          btn.classList.remove("copied");
+        }, 2000);
+      } catch {
+        btn.textContent = "انسخ يدوياً";
+      }
+    });
+
+    checkBtn.addEventListener("click", checkAnswer);
+    document.getElementById("clearBtn").addEventListener("click", clearAll);
+    document.getElementById("shuffleBtn").addEventListener("click", reshuffle);
+
+    slots = TARGET.map(() => null);
+    buildSlotsUI();
+    renderPool(shuffledOrder);
+    renderSlots();
+  </script>
+</body>
+</html>

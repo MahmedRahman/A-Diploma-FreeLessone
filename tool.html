@@ -1,0 +1,2111 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>أداة SELF ADS — بناء Master Prompt</title>
+  <style>
+    :root {
+      --bg: #f4f6fb;
+      --bg-soft: #eef1f8;
+      --surface: #ffffff;
+      --text: #1a2233;
+      --muted: #5c667a;
+      --border: #dde3ef;
+      --accent: #4f6ef7;
+      --accent-soft: #e8edff;
+      --accent-2: #7c5cbf;
+      --success: #0d9f6e;
+      --success-soft: #e6f7f1;
+      --warning: #d97706;
+      --warning-soft: #fef3e2;
+      --danger: #dc4c4c;
+      --danger-soft: #fdecec;
+      --radius: 18px;
+      --radius-sm: 12px;
+      --shadow: 0 8px 32px rgba(26, 34, 51, 0.07);
+      --shadow-hover: 0 16px 48px rgba(26, 34, 51, 0.12);
+    }
+
+    * {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+    }
+
+    body {
+      font-family: "Segoe UI", Tahoma, "Arial", sans-serif;
+      background: var(--bg);
+      color: var(--text);
+      line-height: 1.8;
+      min-height: 100vh;
+    }
+
+    body::before {
+      content: "";
+      position: fixed;
+      inset: 0;
+      background:
+        radial-gradient(ellipse 70% 50% at 10% 0%, rgba(79, 110, 247, 0.08), transparent),
+        radial-gradient(ellipse 50% 40% at 95% 5%, rgba(124, 92, 191, 0.06), transparent);
+      pointer-events: none;
+      z-index: 0;
+    }
+
+    .page {
+      position: relative;
+      z-index: 1;
+      max-width: 1180px;
+      margin: 0 auto;
+      padding: 1.25rem 1.25rem 3.5rem;
+    }
+
+    /* Top nav */
+    .top-nav {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      margin-bottom: 1.5rem;
+      padding-bottom: 1rem;
+      border-bottom: 1px solid var(--border);
+    }
+
+    .back-link {
+      display: inline-flex;
+      align-items: center;
+      gap: 0.4rem;
+      color: var(--muted);
+      text-decoration: none;
+      font-size: 0.9rem;
+      font-weight: 600;
+      transition: color 0.2s;
+    }
+
+    .back-link:hover { color: var(--accent); }
+
+    .nav-links { display: flex; flex-wrap: wrap; gap: 0.35rem; }
+
+    .nav-link {
+      font-size: 0.88rem; font-weight: 600; text-decoration: none; color: var(--muted);
+      padding: 0.4rem 0.75rem; border-radius: 99px; border: 1px solid transparent; transition: all 0.2s;
+    }
+
+    .nav-link:hover { color: var(--accent); background: var(--accent-soft); border-color: var(--border); }
+    .nav-link.active { color: var(--accent); background: var(--accent-soft); border-color: var(--accent); }
+
+    .nav-brand {
+      font-weight: 800;
+      font-size: 1rem;
+      color: var(--text);
+    }
+
+    /* Hero */
+    .hero {
+      text-align: center;
+      margin-bottom: 2.5rem;
+      padding: 2.5rem 1.5rem;
+      background: linear-gradient(135deg, var(--surface) 0%, var(--accent-soft) 100%);
+      border: 1px solid var(--border);
+      border-radius: var(--radius);
+      box-shadow: var(--shadow);
+    }
+
+    .hero-badge {
+      display: inline-block;
+      background: var(--accent);
+      color: #fff;
+      font-size: 0.8rem;
+      font-weight: 700;
+      padding: 0.35rem 1rem;
+      border-radius: 99px;
+      margin-bottom: 1rem;
+      letter-spacing: 0.02em;
+    }
+
+    .hero h1 {
+      font-size: clamp(1.5rem, 4.5vw, 2.2rem);
+      font-weight: 800;
+      line-height: 1.45;
+      margin-bottom: 0.85rem;
+      background: linear-gradient(135deg, var(--text) 30%, var(--accent) 100%);
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+      background-clip: text;
+    }
+
+    .hero p {
+      color: var(--muted);
+      font-size: 1.05rem;
+      max-width: 600px;
+      margin: 0 auto;
+    }
+
+    /* Section */
+    .section {
+      margin-bottom: 2rem;
+    }
+
+    .section-title {
+      font-size: 1.25rem;
+      font-weight: 700;
+      margin-bottom: 1rem;
+      display: flex;
+      align-items: center;
+      gap: 0.5rem;
+    }
+
+    .section-title span {
+      font-size: 1.4rem;
+    }
+
+    /* SELF ADS Grid */
+    .self-ads-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
+      gap: 1rem;
+    }
+
+    .letter-card {
+      background: var(--surface);
+      border: 1px solid var(--border);
+      border-radius: var(--radius-sm);
+      padding: 1.25rem;
+      box-shadow: var(--shadow);
+      transition: transform 0.25s ease, box-shadow 0.25s ease, border-color 0.25s;
+      cursor: default;
+    }
+
+    .letter-card:hover {
+      transform: translateY(-4px);
+      box-shadow: var(--shadow-hover);
+      border-color: var(--accent);
+    }
+
+    .letter-card .letter {
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      width: 44px;
+      height: 44px;
+      border-radius: 12px;
+      font-size: 1.3rem;
+      font-weight: 800;
+      color: #fff;
+      margin-bottom: 0.75rem;
+    }
+
+    .letter-card:nth-child(1) .letter { background: linear-gradient(135deg, #4f6ef7, #6b8cff); }
+    .letter-card:nth-child(2) .letter { background: linear-gradient(135deg, #0d9f6e, #34c38f); }
+    .letter-card:nth-child(3) .letter { background: linear-gradient(135deg, #d97706, #f59e0b); }
+    .letter-card:nth-child(4) .letter { background: linear-gradient(135deg, #7c5cbf, #a78bfa); }
+    .letter-card:nth-child(5) .letter { background: linear-gradient(135deg, #dc4c4c, #f87171); }
+    .letter-card:nth-child(6) .letter { background: linear-gradient(135deg, #0891b2, #22d3ee); }
+    .letter-card:nth-child(7) .letter { background: linear-gradient(135deg, #be185d, #f472b6); }
+
+    .letter-card h3 {
+      font-size: 1rem;
+      font-weight: 700;
+      margin-bottom: 0.35rem;
+    }
+
+    .letter-card p {
+      font-size: 0.88rem;
+      color: var(--muted);
+      line-height: 1.65;
+    }
+
+    /* Comparison */
+    .compare-grid {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 1.25rem;
+    }
+
+    .prompt-card {
+      background: var(--surface);
+      border-radius: var(--radius);
+      border: 1px solid var(--border);
+      overflow: hidden;
+      box-shadow: var(--shadow);
+      transition: transform 0.25s ease, box-shadow 0.25s;
+    }
+
+    .prompt-card:hover {
+      transform: translateY(-3px);
+      box-shadow: var(--shadow-hover);
+    }
+
+    .prompt-card.weak {
+      border-top: 4px solid var(--danger);
+    }
+
+    .prompt-card.strong {
+      border-top: 4px solid var(--success);
+    }
+
+    .prompt-header {
+      padding: 1rem 1.25rem;
+      font-weight: 700;
+      font-size: 1rem;
+      display: flex;
+      align-items: center;
+      gap: 0.5rem;
+    }
+
+    .prompt-card.weak .prompt-header {
+      background: var(--danger-soft);
+      color: var(--danger);
+    }
+
+    .prompt-card.strong .prompt-header {
+      background: var(--success-soft);
+      color: var(--success);
+    }
+
+    .prompt-body {
+      padding: 1.25rem;
+    }
+
+    .prompt-text {
+      background: var(--bg-soft);
+      border: 1px solid var(--border);
+      border-radius: var(--radius-sm);
+      padding: 1rem;
+      font-size: 0.9rem;
+      line-height: 1.75;
+      direction: ltr;
+      text-align: left;
+      font-family: "Courier New", Courier, monospace;
+      color: #2d3748;
+      margin-bottom: 1.25rem;
+      word-break: break-word;
+    }
+
+    .prompt-card.strong .prompt-text {
+      font-size: 0.82rem;
+    }
+
+    .result-label {
+      font-size: 0.85rem;
+      font-weight: 700;
+      color: var(--text);
+      margin-bottom: 0.6rem;
+      display: flex;
+      align-items: center;
+      gap: 0.35rem;
+    }
+
+    .result-list {
+      list-style: none;
+      padding: 0;
+    }
+
+    .result-list li {
+      font-size: 0.88rem;
+      color: var(--muted);
+      padding: 0.35rem 0;
+      padding-right: 1.25rem;
+      position: relative;
+      line-height: 1.6;
+    }
+
+    .result-list li::before {
+      content: "•";
+      position: absolute;
+      right: 0;
+      font-weight: 700;
+    }
+
+    .prompt-card.weak .result-list li::before { color: var(--danger); }
+    .prompt-card.strong .result-list li::before { color: var(--success); }
+
+    /* Impact section */
+    .impact-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(260px, 1fr));
+      gap: 1rem;
+    }
+
+    .impact-card {
+      background: var(--surface);
+      border: 1px solid var(--border);
+      border-radius: var(--radius-sm);
+      padding: 1.25rem;
+      box-shadow: var(--shadow);
+      transition: transform 0.2s, box-shadow 0.2s, border-color 0.2s;
+    }
+
+    .impact-card:hover {
+      transform: translateY(-3px);
+      box-shadow: var(--shadow-hover);
+      border-color: var(--accent-2);
+    }
+
+    .impact-card .icon {
+      font-size: 1.6rem;
+      margin-bottom: 0.5rem;
+    }
+
+    .impact-card h3 {
+      font-size: 1rem;
+      font-weight: 700;
+      margin-bottom: 0.4rem;
+      color: var(--accent-2);
+    }
+
+    .impact-card p {
+      font-size: 0.88rem;
+      color: var(--muted);
+      line-height: 1.7;
+    }
+
+    .impact-tag {
+      display: inline-block;
+      margin-top: 0.6rem;
+      font-size: 0.75rem;
+      font-weight: 600;
+      background: var(--accent-soft);
+      color: var(--accent);
+      padding: 0.2rem 0.65rem;
+      border-radius: 99px;
+    }
+
+    /* Golden rule */
+    .golden-rule {
+      margin-top: 2.5rem;
+      text-align: center;
+      background: linear-gradient(135deg, #fef9e7 0%, #fff8e1 50%, #fef3c7 100%);
+      border: 2px solid #f59e0b;
+      border-radius: var(--radius);
+      padding: 2.5rem 2rem;
+      box-shadow: 0 12px 40px rgba(245, 158, 11, 0.15);
+      transition: transform 0.3s ease, box-shadow 0.3s ease;
+      cursor: default;
+    }
+
+    .golden-rule:hover {
+      transform: scale(1.02);
+      box-shadow: 0 20px 56px rgba(245, 158, 11, 0.22);
+    }
+
+    .golden-rule .crown {
+      font-size: 2.5rem;
+      margin-bottom: 0.75rem;
+      display: block;
+    }
+
+    .golden-rule h2 {
+      font-size: 1.5rem;
+      font-weight: 800;
+      color: #92400e;
+      margin-bottom: 0.6rem;
+    }
+
+    .golden-rule p {
+      font-size: 1.1rem;
+      color: #b45309;
+      font-weight: 500;
+    }
+
+    /* Footer note */
+    .footer-note {
+      text-align: center;
+      margin-top: 2rem;
+      font-size: 0.85rem;
+      color: var(--muted);
+    }
+
+    /* Tool layout + layer preview */
+    .tool-layout {
+      display: grid;
+      grid-template-columns: minmax(280px, 340px) 1fr;
+      gap: 1.25rem;
+      align-items: start;
+      margin-bottom: 2rem;
+    }
+
+    .layer-preview-panel {
+      position: sticky;
+      top: 1rem;
+      background: var(--surface);
+      border: 1px solid var(--border);
+      border-radius: var(--radius);
+      padding: 1.15rem;
+      box-shadow: var(--shadow);
+    }
+
+    .layer-preview-panel h2 {
+      font-size: 0.95rem;
+      font-weight: 800;
+      margin-bottom: 0.25rem;
+    }
+
+    .layer-preview-panel .layer-hint {
+      font-size: 0.78rem;
+      color: var(--muted);
+      line-height: 1.55;
+      margin-bottom: 1rem;
+    }
+
+    .layer-compose-wrap {
+      background: #0f1419;
+      border-radius: var(--radius-sm);
+      padding: 0.65rem;
+      margin-bottom: 1rem;
+    }
+
+    .layer-compose {
+      position: relative;
+      width: 100%;
+      aspect-ratio: 4 / 5;
+      margin: 0 auto;
+      border-radius: 8px;
+      overflow: hidden;
+      background: #1a2233;
+      transition: aspect-ratio 0.35s ease;
+      box-shadow: inset 0 0 0 1px rgba(255,255,255,0.08);
+    }
+
+    .layer-compose-inner {
+      position: absolute;
+      inset: 0;
+      transition: transform 0.45s ease;
+      transform-origin: center center;
+    }
+
+    .layer-slot {
+      position: absolute;
+      inset: 0;
+      opacity: 0;
+      transition: opacity 0.4s ease;
+      pointer-events: none;
+    }
+
+    .layer-slot.active { opacity: 1; }
+
+    .layer-slot.env {
+      background-size: cover;
+      background-position: center;
+    }
+
+    .layer-slot.subject {
+      display: flex;
+      align-items: flex-end;
+      justify-content: center;
+      padding: 8% 10% 5%;
+    }
+
+    .layer-slot.subject img {
+      width: auto;
+      max-width: 72%;
+      height: 88%;
+      object-fit: contain;
+      border-radius: 4px;
+      box-shadow: 0 16px 40px rgba(0,0,0,0.55);
+      filter: drop-shadow(0 4px 12px rgba(0,0,0,0.35));
+    }
+
+    .layer-slot.lighting.has-ref {
+      background-size: cover;
+      background-position: center;
+      background-blend-mode: soft-light;
+    }
+
+    .layer-slot.framing-preview {
+      background-size: cover;
+      background-position: center top;
+      mix-blend-mode: luminosity;
+      opacity: 0;
+    }
+
+    .layer-slot.framing-preview.active { opacity: 0.5; }
+
+    .layer-slot.details.has-ref {
+      background-size: cover;
+      background-position: center;
+      mix-blend-mode: overlay;
+    }
+
+    .layer-slot.style-preview {
+      background-size: cover;
+      background-position: center;
+      mix-blend-mode: soft-light;
+      opacity: 0;
+    }
+
+    .layer-slot.style-preview.active { opacity: 0.42; }
+
+    .layer-slot.lighting {
+      mix-blend-mode: overlay;
+    }
+
+    .layer-slot.lighting.film {
+      background: linear-gradient(160deg, rgba(255,180,80,0.55), rgba(80,40,20,0.35));
+    }
+
+    .layer-slot.lighting.dramatic {
+      background: radial-gradient(ellipse at center, transparent 25%, rgba(0,0,0,0.65) 100%),
+                  linear-gradient(180deg, rgba(255,60,40,0.25), transparent 50%);
+    }
+
+    .layer-slot.lighting.natural {
+      background: linear-gradient(180deg, rgba(255,255,240,0.35), transparent 60%);
+    }
+
+    .layer-slot.lighting.foggy {
+      background: linear-gradient(180deg, rgba(200,210,220,0.55), rgba(150,160,170,0.4));
+    }
+
+    .layer-slot.lighting.accent {
+      background: linear-gradient(135deg, rgba(79,110,247,0.45), transparent 55%),
+                  linear-gradient(315deg, rgba(245,158,11,0.35), transparent 50%);
+    }
+
+    .layer-slot.framing-vignette {
+      box-shadow: inset 0 0 40px rgba(0,0,0,0.35);
+    }
+
+    .layer-slot.details {
+      background-image:
+        repeating-linear-gradient(0deg, transparent, transparent 2px, rgba(255,255,255,0.03) 2px, rgba(255,255,255,0.03) 3px),
+        repeating-linear-gradient(90deg, transparent, transparent 2px, rgba(255,255,255,0.02) 2px, rgba(255,255,255,0.02) 3px);
+      opacity: 0;
+    }
+
+    .layer-slot.details.active { opacity: 0.65; }
+
+    .layer-slot.style-filter {
+      background: transparent;
+      mix-blend-mode: normal;
+    }
+
+    .layer-compose.style-cinematic .layer-compose-inner { filter: contrast(1.12) saturate(1.15); }
+    .layer-compose.style-commercial .layer-compose-inner { filter: contrast(1.05) saturate(0.95) brightness(1.05); }
+    .layer-compose.style-anime .layer-compose-inner { filter: saturate(1.45) contrast(1.08); }
+    .layer-compose.style-oil .layer-compose-inner { filter: saturate(1.2) contrast(1.1) sepia(0.15); }
+    .layer-compose.style-3d .layer-compose-inner { filter: contrast(1.08) saturate(1.1) brightness(1.02); }
+    .layer-compose.style-minimal .layer-compose-inner { filter: saturate(0.75) contrast(0.95) brightness(1.08); }
+    .layer-compose.style-ultra .layer-compose-inner { filter: contrast(1.05) saturate(1.05); }
+
+    .layer-empty-state {
+      position: absolute;
+      inset: 0;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      gap: 0.35rem;
+      color: rgba(255,255,255,0.45);
+      font-size: 0.78rem;
+      text-align: center;
+      padding: 1rem;
+      z-index: 0;
+    }
+
+    .layer-empty-state span { font-size: 1.5rem; opacity: 0.6; }
+
+    /* Exploded layer stack */
+    .layer-exploded {
+      position: relative;
+      height: 220px;
+      margin-bottom: 0.85rem;
+      perspective: 800px;
+    }
+
+    .layer-exploded-card {
+      position: absolute;
+      right: 0;
+      left: 0;
+      height: 52px;
+      border-radius: 10px;
+      border: 2px solid var(--border);
+      background: var(--surface);
+      display: flex;
+      align-items: center;
+      gap: 0.55rem;
+      padding: 0 0.7rem;
+      box-shadow: var(--shadow);
+      transition: transform 0.4s ease, border-color 0.25s, box-shadow 0.25s, opacity 0.3s;
+      overflow: hidden;
+    }
+
+    .layer-exploded-card.filled {
+      border-color: var(--accent);
+      box-shadow: 0 6px 20px rgba(79,110,247,0.15);
+    }
+
+    .layer-exploded-card.active-layer {
+      border-color: var(--accent);
+      box-shadow: 0 0 0 3px rgba(79,110,247,0.2), 0 8px 24px rgba(79,110,247,0.2);
+      z-index: 20 !important;
+    }
+
+    .layer-exploded-thumb {
+      width: 40px;
+      height: 32px;
+      border-radius: 6px;
+      background: var(--bg-soft);
+      background-size: cover;
+      background-position: center;
+      flex-shrink: 0;
+      display: grid;
+      place-items: center;
+      font-size: 0.9rem;
+      overflow: hidden;
+    }
+
+    .layer-exploded-thumb img {
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+    }
+
+    .layer-exploded-info {
+      flex: 1;
+      min-width: 0;
+    }
+
+    .layer-exploded-info strong {
+      display: block;
+      font-size: 0.75rem;
+      font-weight: 800;
+      line-height: 1.3;
+    }
+
+    .layer-exploded-info span {
+      display: block;
+      font-size: 0.68rem;
+      color: var(--muted);
+      white-space: nowrap;
+      overflow: hidden;
+      text-overflow: ellipsis;
+    }
+
+    .layer-exploded-badge {
+      font-size: 0.65rem;
+      font-weight: 800;
+      width: 22px;
+      height: 22px;
+      border-radius: 6px;
+      display: grid;
+      place-items: center;
+      color: #fff;
+      flex-shrink: 0;
+    }
+
+    .layer-progress {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 0.35rem;
+    }
+
+    .layer-progress-chip {
+      font-size: 0.68rem;
+      font-weight: 700;
+      padding: 0.2rem 0.5rem;
+      border-radius: 99px;
+      background: var(--bg-soft);
+      color: var(--muted);
+      border: 1px solid var(--border);
+      transition: all 0.25s;
+    }
+
+    .layer-progress-chip.done {
+      background: var(--accent-soft);
+      color: var(--accent);
+      border-color: #93a8fd;
+    }
+
+    .principle-item.layer-focus {
+      border-color: var(--accent);
+      box-shadow: 0 0 0 3px rgba(79,110,247,0.12);
+    }
+
+    /* Tool launcher */
+    .tool-launcher { display: none; }
+
+    /* Tool panel */
+    .tool-panel {
+      display: block;
+      background: var(--surface);
+      border: 1px solid var(--border);
+      border-radius: var(--radius);
+      padding: 1.75rem;
+      box-shadow: var(--shadow);
+      margin-bottom: 2rem;
+    }
+
+    .tool-panel.visible { display: block; }
+
+    .tool-panel-header {
+      text-align: center;
+      margin-bottom: 1.75rem;
+      padding-bottom: 1.25rem;
+      border-bottom: 1px dashed var(--border);
+    }
+
+    .tool-panel-header h2 {
+      font-size: 1.3rem;
+      font-weight: 800;
+      margin-bottom: 0.4rem;
+    }
+
+    .tool-panel-header p {
+      color: var(--muted);
+      font-size: 0.92rem;
+    }
+
+    .principle-list {
+      display: flex;
+      flex-direction: column;
+      gap: 1.25rem;
+    }
+
+    .principle-item {
+      background: var(--bg-soft);
+      border: 1px solid var(--border);
+      border-radius: var(--radius-sm);
+      padding: 1.25rem;
+      transition: border-color 0.2s, box-shadow 0.2s;
+    }
+
+    .principle-item:hover {
+      border-color: var(--accent);
+      box-shadow: 0 4px 16px rgba(79, 110, 247, 0.08);
+    }
+
+    .principle-head {
+      display: flex;
+      align-items: flex-start;
+      gap: 0.85rem;
+      margin-bottom: 1rem;
+    }
+
+    .principle-letter {
+      flex-shrink: 0;
+      width: 40px;
+      height: 40px;
+      border-radius: 10px;
+      display: grid;
+      place-items: center;
+      font-weight: 800;
+      font-size: 1.1rem;
+      color: #fff;
+    }
+
+    .principle-item[data-key="subject"] .principle-letter { background: linear-gradient(135deg, #4f6ef7, #6b8cff); }
+    .principle-item[data-key="environment"] .principle-letter { background: linear-gradient(135deg, #0d9f6e, #34c38f); }
+    .principle-item[data-key="lighting"] .principle-letter { background: linear-gradient(135deg, #d97706, #f59e0b); }
+    .principle-item[data-key="framing"] .principle-letter { background: linear-gradient(135deg, #7c5cbf, #a78bfa); }
+    .principle-item[data-key="aspect"] .principle-letter { background: linear-gradient(135deg, #dc4c4c, #f87171); }
+    .principle-item[data-key="details"] .principle-letter { background: linear-gradient(135deg, #0891b2, #22d3ee); }
+    .principle-item[data-key="style"] .principle-letter { background: linear-gradient(135deg, #be185d, #f472b6); }
+
+    .principle-info h3 {
+      font-size: 1rem;
+      font-weight: 700;
+      margin-bottom: 0.2rem;
+    }
+
+    .principle-info p {
+      font-size: 0.85rem;
+      color: var(--muted);
+      line-height: 1.6;
+    }
+
+    .options-label {
+      font-size: 0.8rem;
+      font-weight: 600;
+      color: var(--muted);
+      margin-bottom: 0.55rem;
+    }
+
+    .options-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(108px, 1fr));
+      gap: 0.75rem;
+      margin-bottom: 0.85rem;
+    }
+
+    .option-card {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: 0.45rem;
+      padding: 0.55rem;
+      font-family: inherit;
+      background: var(--surface);
+      border: 2px solid var(--border);
+      border-radius: var(--radius-sm);
+      cursor: pointer;
+      transition: all 0.22s ease;
+      color: var(--text);
+      overflow: hidden;
+    }
+
+    .option-card:hover {
+      border-color: var(--accent-2);
+      transform: translateY(-3px);
+      box-shadow: 0 8px 20px rgba(79, 110, 247, 0.12);
+    }
+
+    .option-card.selected {
+      border-color: var(--accent);
+      background: var(--accent-soft);
+      box-shadow: 0 0 0 3px rgba(79, 110, 247, 0.18);
+    }
+
+    .option-img-wrap {
+      width: 100%;
+      aspect-ratio: 4 / 3;
+      border-radius: 8px;
+      overflow: hidden;
+      background: var(--bg-soft);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+    }
+
+    .option-img {
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+      display: block;
+      transition: transform 0.3s ease;
+    }
+
+    .option-card:hover .option-img {
+      transform: scale(1.06);
+    }
+
+    .option-aspect-preview {
+      width: 55%;
+      max-height: 72px;
+      background: linear-gradient(135deg, var(--accent-soft), #d4dcff);
+      border: 2px solid var(--accent);
+      border-radius: 4px;
+      margin: auto;
+    }
+
+    .option-aspect-preview.wide { width: 85%; max-height: 48px; }
+    .option-aspect-preview.square { width: 58%; aspect-ratio: 1; max-height: none; }
+    .option-aspect-preview.tall { width: 42%; aspect-ratio: 9/16; max-height: none; }
+    .option-aspect-preview.portrait { width: 50%; aspect-ratio: 4/5; max-height: none; }
+    .option-aspect-preview.portrait34 { width: 48%; aspect-ratio: 3/4; max-height: none; }
+
+    .option-label {
+      font-size: 0.78rem;
+      font-weight: 600;
+      text-align: center;
+      line-height: 1.35;
+      color: var(--text);
+    }
+
+    .option-card.selected .option-label {
+      color: var(--accent);
+    }
+
+    .option-fallback {
+      font-size: 2rem;
+      line-height: 1;
+    }
+
+    .option-sprite {
+      width: 100%;
+      height: 100%;
+      background-repeat: no-repeat;
+    }
+
+    .framing-grid {
+      grid-template-columns: repeat(auto-fill, minmax(120px, 1fr));
+    }
+
+    /* Spice keywords */
+    .spice-section {
+      background: linear-gradient(135deg, #fff8f0 0%, #fff3e6 100%);
+      border: 1px solid #f5d0a9;
+      border-radius: var(--radius-sm);
+      padding: 1.25rem;
+      margin-top: 0.25rem;
+    }
+
+    .spice-head {
+      display: flex;
+      align-items: flex-start;
+      gap: 0.85rem;
+      margin-bottom: 1rem;
+    }
+
+    .spice-icon {
+      flex-shrink: 0;
+      width: 40px;
+      height: 40px;
+      border-radius: 10px;
+      background: linear-gradient(135deg, #f59e0b, #d97706);
+      display: grid;
+      place-items: center;
+      font-size: 1.2rem;
+    }
+
+    .spice-head h3 {
+      font-size: 1rem;
+      font-weight: 700;
+      margin-bottom: 0.2rem;
+    }
+
+    .spice-head p {
+      font-size: 0.85rem;
+      color: var(--muted);
+      line-height: 1.6;
+    }
+
+    .spice-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(140px, 1fr));
+      gap: 0.6rem;
+    }
+
+    .spice-chip {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: 0.3rem;
+      padding: 0.75rem 0.5rem;
+      font-family: inherit;
+      background: var(--surface);
+      border: 2px solid #f0d5b5;
+      border-radius: var(--radius-sm);
+      cursor: pointer;
+      transition: all 0.2s;
+      text-align: center;
+    }
+
+    .spice-chip:hover {
+      border-color: #f59e0b;
+      transform: translateY(-2px);
+      box-shadow: 0 6px 16px rgba(245, 158, 11, 0.15);
+    }
+
+    .spice-chip.selected {
+      border-color: #d97706;
+      background: #fef3e2;
+      box-shadow: 0 0 0 3px rgba(245, 158, 11, 0.2);
+    }
+
+    .spice-chip .kw-en {
+      font-size: 0.78rem;
+      font-weight: 700;
+      color: #92400e;
+      direction: ltr;
+    }
+
+    .spice-chip .kw-ar {
+      font-size: 0.72rem;
+      color: var(--muted);
+      line-height: 1.4;
+    }
+
+    .spice-chip .kw-emoji {
+      font-size: 1.3rem;
+    }
+
+    .spice-actions {
+      display: flex;
+      gap: 0.5rem;
+      flex-wrap: wrap;
+      margin-top: 0.85rem;
+    }
+
+    .btn-spice-all,
+    .btn-spice-clear {
+      padding: 0.4rem 0.9rem;
+      font-family: inherit;
+      font-size: 0.8rem;
+      font-weight: 600;
+      border-radius: 99px;
+      cursor: pointer;
+      border: 1px solid #f0d5b5;
+      background: var(--surface);
+      color: #92400e;
+      transition: all 0.2s;
+    }
+
+    .btn-spice-all:hover,
+    .btn-spice-clear:hover {
+      background: #fef3e2;
+      border-color: #d97706;
+    }
+
+    /* Spice edu cards */
+    .spice-edu-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(220px, 1fr));
+      gap: 0.85rem;
+    }
+
+    .spice-edu-card {
+      background: linear-gradient(135deg, #fffaf5 0%, var(--surface) 100%);
+      border: 1px solid #f5e6d3;
+      border-radius: var(--radius-sm);
+      padding: 1rem;
+      transition: transform 0.2s, box-shadow 0.2s;
+    }
+
+    .spice-edu-card:hover {
+      transform: translateY(-3px);
+      box-shadow: var(--shadow-hover);
+    }
+
+    .spice-edu-card .kw-tag {
+      display: inline-block;
+      font-size: 0.8rem;
+      font-weight: 700;
+      color: #d97706;
+      background: #fef3e2;
+      padding: 0.2rem 0.6rem;
+      border-radius: 99px;
+      margin-bottom: 0.5rem;
+      direction: ltr;
+    }
+
+    .spice-edu-card p {
+      font-size: 0.85rem;
+      color: var(--muted);
+      line-height: 1.65;
+    }
+
+    .principle-input {
+      width: 100%;
+      padding: 0.75rem 1rem;
+      font-family: inherit;
+      font-size: 0.9rem;
+      background: var(--surface);
+      border: 1px solid var(--border);
+      border-radius: 10px;
+      color: var(--text);
+      transition: border-color 0.2s, box-shadow 0.2s;
+      resize: vertical;
+    }
+
+    .principle-input:focus {
+      outline: none;
+      border-color: var(--accent);
+      box-shadow: 0 0 0 3px rgba(79, 110, 247, 0.15);
+    }
+
+    textarea.principle-input {
+      min-height: 70px;
+    }
+
+    .tool-actions {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 0.75rem;
+      justify-content: center;
+      margin-top: 1.75rem;
+      padding-top: 1.5rem;
+      border-top: 1px dashed var(--border);
+    }
+
+    .btn-generate {
+      padding: 0.85rem 2rem;
+      font-family: inherit;
+      font-size: 1rem;
+      font-weight: 700;
+      color: #fff;
+      background: linear-gradient(135deg, var(--success), #0b8a60);
+      border: none;
+      border-radius: 99px;
+      cursor: pointer;
+      box-shadow: 0 6px 20px rgba(13, 159, 110, 0.3);
+      transition: transform 0.2s;
+    }
+
+    .btn-generate:hover { transform: translateY(-2px); }
+
+    .btn-reset {
+      padding: 0.85rem 1.5rem;
+      font-family: inherit;
+      font-size: 0.95rem;
+      font-weight: 600;
+      color: var(--muted);
+      background: var(--surface);
+      border: 1px solid var(--border);
+      border-radius: 99px;
+      cursor: pointer;
+      transition: border-color 0.2s, color 0.2s;
+    }
+
+    .btn-reset:hover {
+      border-color: var(--muted);
+      color: var(--text);
+    }
+
+    .tool-result {
+      display: none;
+      margin-top: 1.5rem;
+      padding: 1.25rem;
+      background: var(--success-soft);
+      border: 1px solid rgba(13, 159, 110, 0.25);
+      border-radius: var(--radius-sm);
+    }
+
+    .tool-result.visible { display: block; }
+
+    .tool-result h3 {
+      font-size: 0.95rem;
+      font-weight: 700;
+      color: var(--success);
+      margin-bottom: 0.75rem;
+      display: flex;
+      align-items: center;
+      gap: 0.4rem;
+    }
+
+    .tool-result-text {
+      background: var(--surface);
+      border: 1px solid var(--border);
+      border-radius: 10px;
+      padding: 1rem;
+      font-size: 0.88rem;
+      line-height: 1.8;
+      direction: ltr;
+      text-align: left;
+      font-family: "Courier New", Courier, monospace;
+      color: #2d3748;
+      word-break: break-word;
+      margin-bottom: 0.85rem;
+    }
+
+    .btn-copy {
+      padding: 0.55rem 1.25rem;
+      font-family: inherit;
+      font-size: 0.88rem;
+      font-weight: 600;
+      color: var(--success);
+      background: var(--surface);
+      border: 1px solid var(--success);
+      border-radius: 99px;
+      cursor: pointer;
+      transition: background 0.2s, color 0.2s;
+    }
+
+    .btn-copy:hover {
+      background: var(--success);
+      color: #fff;
+    }
+
+    .copy-toast {
+      position: fixed;
+      bottom: 1.5rem;
+      left: 50%;
+      transform: translateX(-50%) translateY(80px);
+      background: var(--success);
+      color: #fff;
+      padding: 0.7rem 1.4rem;
+      border-radius: 99px;
+      font-weight: 600;
+      font-size: 0.9rem;
+      transition: transform 0.35s ease;
+      z-index: 100;
+      pointer-events: none;
+    }
+
+    .copy-toast.show { transform: translateX(-50%) translateY(0); }
+
+    /* Responsive */
+    @media (max-width: 900px) {
+      .tool-layout {
+        grid-template-columns: 1fr;
+      }
+
+      .layer-preview-panel {
+        position: static;
+      }
+    }
+
+    @media (max-width: 700px) {
+      .compare-grid {
+        grid-template-columns: 1fr;
+      }
+
+      .page {
+        padding: 1.25rem 1rem 2.5rem;
+      }
+
+      .hero {
+        padding: 1.75rem 1.25rem;
+      }
+
+      .self-ads-grid {
+        grid-template-columns: 1fr 1fr;
+      }
+    }
+
+    @media (max-width: 420px) {
+      .self-ads-grid {
+        grid-template-columns: 1fr;
+      }
+
+      .options-grid {
+        grid-template-columns: repeat(3, 1fr);
+        gap: 0.5rem;
+      }
+
+      .option-label {
+        font-size: 0.72rem;
+      }
+    }
+  </style>
+</head>
+<body>
+  <div class="page">
+
+    <nav class="top-nav">
+      <a href="index.html" class="back-link">← الدليل الرئيسي</a>
+      <div class="nav-links">
+        <a href="framing.html" class="nav-link">📷 Framing</a>
+        <a href="lighting.html" class="nav-link">💡 Lighting</a>
+        <a href="aspect.html" class="nav-link">📐 Aspect</a>
+        <a href="style.html" class="nav-link">🎨 Style</a>
+        <a href="master-prompt.html" class="nav-link">👑 Master</a>
+        <a href="analyzer.html" class="nav-link">🤖 المحلّل</a>
+        <a href="vision.html" class="nav-link">🖼️ Vision</a>
+        <a href="tool.html" class="nav-link active">🛠️ الأداة</a>
+      </div>
+    </nav>
+
+    <!-- Interactive Tool -->
+    <div class="tool-layout">
+      <aside class="layer-preview-panel" id="layerPreviewPanel">
+        <h2>🧱 طبقات الصورة</h2>
+        <p class="layer-hint">كل مكوّن تختاره يُضاف كطبقة فوق اللي قبلها — زي Photoshop — لحد ما توصل للصورة النهائية.</p>
+
+        <div class="layer-compose-wrap">
+          <div class="layer-compose" id="layerCompose">
+            <div class="layer-empty-state" id="layerEmptyState">
+              <span>🖼️</span>
+              <p>ابدأ باختيار <strong>البيئة</strong> ثم باقي المكوّنات</p>
+            </div>
+            <div class="layer-compose-inner" id="layerComposeInner">
+              <div class="layer-slot env" id="layerEnv"></div>
+              <div class="layer-slot subject" id="layerSubject"></div>
+              <div class="layer-slot lighting" id="layerLighting"></div>
+              <div class="layer-slot framing-vignette" id="layerFraming"></div>
+              <div class="layer-slot framing-preview" id="layerFramingPreview"></div>
+              <div class="layer-slot details" id="layerDetails"></div>
+              <div class="layer-slot style-preview" id="layerStylePreview"></div>
+              <div class="layer-slot style-filter" id="layerStyle"></div>
+            </div>
+          </div>
+        </div>
+
+        <div class="layer-exploded" id="layerExploded" aria-label="الطبقات مفكوكة"></div>
+        <div class="layer-progress" id="layerProgress"></div>
+      </aside>
+
+      <div class="tool-panel" id="toolPanel">
+      <div class="tool-panel-header">
+        <h2>أداة SELF ADS التفاعلية</h2>
+        <p>اختر كل مكوّن وشاهد طبقات الصورة تتكوّن على اليسار — ثم ولّد Master Prompt من اختياراتك</p>
+      </div>
+
+      <div class="principle-list" id="principleList"></div>
+
+      <div class="spice-section" id="spiceSection">
+        <div class="spice-head">
+          <div class="spice-icon">🧂</div>
+          <div>
+            <h3>كلمات التوابل — Quality Keywords</h3>
+            <p>كلمات ترفع الواقعية والدقة في أي برومبت. اختر ما يناسبك — تتضاف تلقائياً في نهاية الـ Master Prompt.</p>
+          </div>
+        </div>
+        <div class="spice-grid" id="spiceGrid"></div>
+        <div class="spice-actions">
+          <button type="button" class="btn-spice-all" id="spiceSelectAll">✅ اختيار الكل</button>
+          <button type="button" class="btn-spice-clear" id="spiceClearAll">✖️ إلغاء الكل</button>
+        </div>
+      </div>
+
+      <div class="tool-actions">
+        <button class="btn-generate" id="generateBtn" type="button">✨ إنشاء الـ Prompt</button>
+        <button class="btn-reset" id="resetBtn" type="button">🔄 إعادة تعيين</button>
+      </div>
+
+      <div class="tool-result" id="toolResult">
+        <h3>✅ Master Prompt جاهز</h3>
+        <div class="tool-result-text" id="resultText"></div>
+        <button class="btn-copy" id="copyBtn" type="button">📋 نسخ البرومبت</button>
+      </div>
+    </div>
+
+    <p class="footer-note">🛠️ <a href="index.html" style="color:var(--accent);text-decoration:none;font-weight:600;">الدليل الرئيسي</a> · <a href="master-prompt.html" style="color:var(--accent);text-decoration:none;">Master Prompt</a> · <a href="framing.html" style="color:var(--accent);text-decoration:none;">Framing</a> · <a href="lighting.html" style="color:var(--accent);text-decoration:none;">Lighting</a> · <a href="aspect.html" style="color:var(--accent);text-decoration:none;">Aspect</a> · <a href="style.html" style="color:var(--accent);text-decoration:none;">Style</a></p>
+
+  </div>
+
+  <div class="copy-toast" id="copyToast">تم النسخ بنجاح ✓</div>
+
+  <script>
+    const SPICE_KEYWORDS = [
+      { value: "photorealistic", label: "واقعي فوتوغرافي", desc: "يخلي الصورة شبه صورة فوتوغرافية بجد", emoji: "📸" },
+      { value: "hyperrealistic", label: "واقعي مُبالَغ", desc: "يرفع درجة التفاصيل أكتر من الطبيعي", emoji: "🔬" },
+      { value: "8k resolution", label: "دقة 8K", desc: "إحساس دقة عالية جداً", emoji: "🖥️" },
+      { value: "sharp focus", label: "تركيز حاد", desc: "يخلي الموضوع الأساسي حاد وواضح", emoji: "🎯" },
+      { value: "detailed texture", label: "ملمس دقيق", desc: "يبرز الخامات: زجاج، قماش، معدن", emoji: "🧵" },
+      { value: "cinematic lighting", label: "إضاءة سينمائية", desc: "إضاءة فيلمية ودرامية", emoji: "🎬" },
+      { value: "natural light", label: "إضاءة طبيعية", desc: "إحساس شمس أو ضوء شباك", emoji: "☀️" },
+      { value: "studio lighting", label: "إضاءة استوديو", desc: "جو نظيف، متوازن، ومحسوب", emoji: "💡" },
+      { value: "DSLR photo", label: "كاميرا DSLR", desc: "إيحاء صورة بكاميرا احترافية", emoji: "📷" },
+      { value: "editorial photography", label: "تصوير إعلاني", desc: "أسلوب مجلات وإعلانات", emoji: "📰" },
+      { value: "high detail", label: "تفاصيل عالية", desc: "يعزز أي تفاصيل دقيقة ويخليها أوضح", emoji: "✨" }
+    ];
+
+    const selectedSpices = new Set();
+
+    const PRINCIPLES = [
+      {
+        key: "subject",
+        letter: "S",
+        title: "Subject — الموضوع",
+        desc: "من أو ماذا في الصورة؟ صِف الشخصية أو العنصر الرئيسي.",
+        options: [
+          { value: "a person", label: "شخص", img: "assets/layer-demo/subject/person.jpg", layerImg: "assets/layer-demo/subject/person.jpg", emoji: "🧑" },
+          { value: "an animal", label: "حيوان", img: "assets/layer-demo/subject/animal.jpg", layerImg: "assets/layer-demo/subject/animal.jpg", emoji: "🐱" },
+          { value: "a product", label: "منتج", img: "assets/layer-demo/subject/product.jpg", layerImg: "assets/layer-demo/subject/product.jpg", emoji: "📦" },
+          { value: "a character", label: "شخصية", img: "assets/layer-demo/subject/character.jpg", layerImg: "assets/layer-demo/subject/character.jpg", emoji: "🦸" },
+          { value: "a vehicle", label: "مركبة", img: "assets/layer-demo/subject/vehicle.jpg", layerImg: "assets/layer-demo/subject/vehicle.jpg", emoji: "🚗" },
+          { value: "food item", label: "طعام", img: "assets/layer-demo/subject/food.jpg", layerImg: "assets/layer-demo/subject/food.jpg", emoji: "🍕" },
+          { value: "a building", label: "مبنى", img: "assets/layer-demo/subject/building.jpg", layerImg: "assets/layer-demo/subject/building.jpg", emoji: "🏢" }
+        ],
+        placeholder: "مثال: young woman, confident expression, wearing orange lace dress, hair in buns",
+        multiline: false
+      },
+      {
+        key: "environment",
+        letter: "E",
+        title: "Environment — البيئة",
+        desc: "أين يحدث المشهد؟ حدّد المكان والأجواء المحيطة.",
+        options: [
+          { value: "on a beach", label: "شاطئ", img: "assets/layer-demo/env/beach.jpg", layerImg: "assets/layer-demo/env/beach.jpg", emoji: "🏖️" },
+          { value: "in a city street", label: "شارع مدينة", img: "assets/layer-demo/env/city.jpg", layerImg: "assets/layer-demo/env/city.jpg", emoji: "🌆" },
+          { value: "in a studio", label: "استوديو", img: "assets/layer-demo/env/studio.jpg", layerImg: "assets/layer-demo/env/studio.jpg", emoji: "🎬" },
+          { value: "in a forest", label: "غابة", img: "assets/layer-demo/env/forest.jpg", layerImg: "assets/layer-demo/env/forest.jpg", emoji: "🌲" },
+          { value: "indoor room", label: "غرفة داخلية", img: "assets/layer-demo/env/room.jpg", layerImg: "assets/layer-demo/env/room.jpg", emoji: "🏠" },
+          { value: "desert landscape", label: "صحراء", img: "assets/layer-demo/env/desert.jpg", layerImg: "assets/layer-demo/env/desert.jpg", emoji: "🏜️" },
+          { value: "tropical beach bar", label: "بار شاطئي", img: "assets/layer-demo/env/beach-bar.jpg", layerImg: "assets/layer-demo/env/beach-bar.jpg", emoji: "🍹" },
+          { value: "coffee shop", label: "مقهى", img: "assets/layer-demo/env/cafe.jpg", layerImg: "assets/layer-demo/env/cafe.jpg", emoji: "☕" }
+        ],
+        placeholder: "مثال: vintage study room, warm wooden desk, bookshelves, cozy atmosphere",
+        multiline: false
+      },
+      {
+        key: "lighting",
+        letter: "L",
+        title: "Lighting — الإضاءة",
+        desc: "كيف يُضاء المشهد؟ الإضاءة تُحدد المزاج والعمق — اختر نوع الإضاءة المناسب.",
+        options: [
+          { value: "film lighting", label: "إضاءة سينمائية", img: "assets/layer-demo/lighting/film.jpg", layerImg: "assets/layer-demo/lighting/film.jpg", emoji: "🎬" },
+          { value: "dramatic lighting", label: "إضاءة درامية", img: "assets/layer-demo/lighting/dramatic.jpg", layerImg: "assets/layer-demo/lighting/dramatic.jpg", emoji: "🌑" },
+          { value: "natural lighting", label: "إضاءة طبيعية", img: "assets/layer-demo/lighting/natural.jpg", layerImg: "assets/layer-demo/lighting/natural.jpg", emoji: "☀️" },
+          { value: "foggy lighting", label: "إضاءة ضبابية", img: "assets/layer-demo/lighting/foggy.jpg", layerImg: "assets/layer-demo/lighting/foggy.jpg", emoji: "🌫️" },
+          { value: "accent lighting", label: "إضاءة محورية", img: "assets/layer-demo/lighting/accent.jpg", layerImg: "assets/layer-demo/lighting/accent.jpg", emoji: "💡" }
+        ],
+        placeholder: "مثال: cinematic golden hour lighting",
+        multiline: false,
+        gridClass: "framing-grid"
+      },
+      {
+        key: "framing",
+        letter: "F",
+        title: "Framing — التأطير",
+        desc: "نوع اللقطة — من قريب جداً إلى واسع جداً. اختر نوع الـ Shot المناسب.",
+        options: [
+          { value: "extreme close-up shot", label: "لقطة قريبة جداً", img: "assets/framing-quiz/extreme-close-up.png", layerImg: "assets/framing-quiz/extreme-close-up.png", emoji: "🔍" },
+          { value: "close-up shot", label: "لقطة قريبة", img: "assets/framing-quiz/close-up.png", layerImg: "assets/framing-quiz/close-up.png", emoji: "👤" },
+          { value: "medium close-up shot", label: "لقطة قريبة متوسطة", img: "assets/framing-quiz/medium-close-up.png", layerImg: "assets/framing-quiz/medium-close-up.png", emoji: "🙂" },
+          { value: "medium shot", label: "لقطة متوسطة", img: "assets/framing-quiz/medium-shot.png", layerImg: "assets/framing-quiz/medium-shot.png", emoji: "🧍" },
+          { value: "medium long-shot", label: "لقطة متوسطة بعيدة", img: "assets/framing-quiz/medium-long-shot.png", layerImg: "assets/framing-quiz/medium-long-shot.png", emoji: "🚶" },
+          { value: "wide shot", label: "لقطة واسعة", img: "assets/framing-quiz/wide-shot.png", layerImg: "assets/framing-quiz/wide-shot.png", emoji: "🏞️" },
+          { value: "ultra-wide shot", label: "لقطة واسعة جداً", img: "assets/framing-quiz/ultra-wide-shot.png", layerImg: "assets/framing-quiz/ultra-wide-shot.png", emoji: "🌄" }
+        ],
+        placeholder: "مثال: extreme close-up shot",
+        multiline: false,
+        gridClass: "framing-grid"
+      },
+      {
+        key: "aspect",
+        letter: "A",
+        title: "Aspect Ratio — الأبعاد",
+        desc: "نسبة عرض الصورة — حدّدها حسب المنصة المستهدفة.",
+        options: [
+          { value: "9:16 vertical", label: "٩:١٦ عمودي", aspectClass: "tall", emoji: "📱" },
+          { value: "16:9 horizontal", label: "١٦:٩ أفقي", aspectClass: "wide", emoji: "🖥️" },
+          { value: "1:1 square", label: "١:١ مربع", aspectClass: "square", emoji: "⬜" },
+          { value: "4:5 portrait", label: "٤:٥ بورتريه", aspectClass: "portrait", emoji: "📷" },
+          { value: "3:4 portrait", label: "٣:٤ عمودي", aspectClass: "portrait34", emoji: "🖼️" }
+        ],
+        placeholder: "مثال: 9:16 vertical for Instagram Reels",
+        multiline: false
+      },
+      {
+        key: "details",
+        letter: "D",
+        title: "Details — التفاصيل",
+        desc: "التفاصيل الدقيقة ترفع الواقعية — الملمس، الانعكاسات، الألوان.",
+        options: [
+          { value: "subtle film grain", label: "حبيبات فيلم", img: "assets/layer-demo/details/grain.jpg", layerImg: "assets/layer-demo/details/grain.jpg", emoji: "🎞️" },
+          { value: "detailed textures", label: "ملمس دقيق", img: "assets/layer-demo/details/texture.jpg", layerImg: "assets/layer-demo/details/texture.jpg", emoji: "🧵" },
+          { value: "reflections and highlights", label: "انعكاسات", img: "assets/layer-demo/details/reflections.jpg", layerImg: "assets/layer-demo/details/reflections.jpg", emoji: "✨" }
+        ],
+        placeholder: "مثال: highly detailed textures, subtle film grain, warm amber tones",
+        multiline: true
+      },
+      {
+        key: "style",
+        letter: "S",
+        title: "Style — الستايل",
+        desc: "أسلوب الصورة النهائي — واقعي، سينمائي، فني، أو تجاري.",
+        options: [
+          { value: "photorealistic", label: "واقعي فوتوغرافي", img: "assets/style-quiz/photorealistic.png", layerImg: "assets/style-quiz/photorealistic.png", emoji: "📸" },
+          { value: "commercial photography", label: "تصوير تجاري", img: "assets/style-quiz/commercial.png", layerImg: "assets/style-quiz/commercial.png", emoji: "🛍️" },
+          { value: "cinematic", label: "سينمائي", img: "assets/style-quiz/cinematic.png", layerImg: "assets/style-quiz/cinematic.png", emoji: "🎬" },
+          { value: "ultra realistic", label: "واقعي للغاية", img: "assets/style-quiz/ultra-realistic.png", layerImg: "assets/style-quiz/ultra-realistic.png", emoji: "🔬" },
+          { value: "anime style", label: "أنمي", img: "assets/style-quiz/anime.png", layerImg: "assets/style-quiz/anime.png", emoji: "🎌" },
+          { value: "oil painting", label: "رسم زيتي", img: "assets/style-quiz/oil-painting.png", layerImg: "assets/style-quiz/oil-painting.png", emoji: "🎨" },
+          { value: "3D render", label: "تصيير 3D", img: "assets/style-quiz/3d-render.png", layerImg: "assets/style-quiz/3d-render.png", emoji: "🧊" },
+          { value: "minimalist", label: "بسيط Minimal", img: "assets/style-quiz/minimalist.png", layerImg: "assets/style-quiz/minimalist.png", emoji: "⬜" }
+        ],
+        placeholder: "مثال: photorealistic commercial photography",
+        multiline: false
+      }
+    ];
+
+    const state = {};
+    PRINCIPLES.forEach((p) => { state[p.key] = { chip: "", custom: "" }; });
+
+    const LAYER_STACK = [
+      { key: "environment", letter: "E", title: "Environment — البيئة", color: "linear-gradient(135deg,#0d9f6e,#34c38f)" },
+      { key: "subject", letter: "S", title: "Subject — الموضوع", color: "linear-gradient(135deg,#4f6ef7,#6b8cff)" },
+      { key: "lighting", letter: "L", title: "Lighting — الإضاءة", color: "linear-gradient(135deg,#d97706,#f59e0b)" },
+      { key: "framing", letter: "F", title: "Framing — التأطير", color: "linear-gradient(135deg,#7c5cbf,#a78bfa)" },
+      { key: "details", letter: "D", title: "Details — التفاصيل", color: "linear-gradient(135deg,#0891b2,#22d3ee)" },
+      { key: "style", letter: "S", title: "Style — الستايل", color: "linear-gradient(135deg,#be185d,#f472b6)" },
+      { key: "aspect", letter: "A", title: "Aspect — الأبعاد", color: "linear-gradient(135deg,#dc4c4c,#f87171)" }
+    ];
+
+    let activeLayerKey = null;
+
+    const layerCompose = document.getElementById("layerCompose");
+    const layerComposeInner = document.getElementById("layerComposeInner");
+    const layerEmptyState = document.getElementById("layerEmptyState");
+    const layerExploded = document.getElementById("layerExploded");
+    const layerProgress = document.getElementById("layerProgress");
+
+    const FRAMING_SCALE = {
+      "extreme close-up shot": 1.9,
+      "close-up shot": 1.55,
+      "medium close-up shot": 1.28,
+      "medium shot": 1,
+      "medium long-shot": 0.82,
+      "wide shot": 0.68,
+      "ultra-wide shot": 0.52
+    };
+
+    const ASPECT_RATIO = {
+      "9:16 vertical": "9 / 16",
+      "16:9 horizontal": "16 / 9",
+      "1:1 square": "1 / 1",
+      "4:5 portrait": "4 / 5",
+      "3:4 portrait": "3 / 4"
+    };
+
+    const LIGHTING_CLASS = {
+      "film lighting": "film",
+      "dramatic lighting": "dramatic",
+      "natural lighting": "natural",
+      "foggy lighting": "foggy",
+      "accent lighting": "accent"
+    };
+
+    const STYLE_CLASS = {
+      photorealistic: "style-ultra",
+      "commercial photography": "style-commercial",
+      cinematic: "style-cinematic",
+      "ultra realistic": "style-ultra",
+      "anime style": "style-anime",
+      "oil painting": "style-oil",
+      "3d render": "style-3d",
+      minimalist: "style-minimal"
+    };
+
+    function getPrinciple(key) {
+      return PRINCIPLES.find((p) => p.key === key);
+    }
+
+    function findOption(key, value) {
+      if (!value) return null;
+      const p = getPrinciple(key);
+      return p?.options.find((o) => o.value === value) || null;
+    }
+
+    function getLayerSrc(opt) {
+      return opt?.layerImg || opt?.img || null;
+    }
+
+    function getOptionThumb(opt) {
+      if (!opt) return null;
+      const src = getLayerSrc(opt);
+      if (src) return { type: "img", src, emoji: opt.emoji };
+      if (opt.sprite) return { type: "sprite", sheet: opt.spriteSheet, pos: opt.sprite, size: opt.spriteSize, emoji: "🖼️" };
+      if (opt.aspectClass) return { type: "aspect", cls: opt.aspectClass, emoji: opt.emoji || "📐" };
+      return { type: "emoji", emoji: opt.emoji || "✓" };
+    }
+
+    function getLayerLabel(key) {
+      const val = getValue(key);
+      if (!val) return "لم يُختَر بعد";
+      const opt = findOption(key, val);
+      if (opt) return opt.label;
+      return val.length > 28 ? val.slice(0, 28) + "…" : val;
+    }
+
+    function renderThumbHtml(thumb) {
+      if (!thumb) return "⬜";
+      if (thumb.type === "img") return `<img src="${thumb.src}" alt="" loading="lazy" />`;
+      if (thumb.type === "sprite") {
+        return `<div style="width:100%;height:100%;background-image:url('${thumb.sheet}');background-size:${thumb.size};background-position:${thumb.pos}"></div>`;
+      }
+      if (thumb.type === "aspect") {
+        return `<div class="option-aspect-preview ${thumb.cls}" style="width:70%;margin:auto"></div>`;
+      }
+      return thumb.emoji || "✓";
+    }
+
+    function buildLayerProgress() {
+      layerProgress.innerHTML = LAYER_STACK.map((l) =>
+        `<span class="layer-progress-chip" data-layer="${l.key}">${l.letter} · ${l.title.split("—")[1]?.trim() || l.key}</span>`
+      ).join("");
+    }
+
+    function buildExplodedStack() {
+      layerExploded.innerHTML = LAYER_STACK.map((l, i) => {
+        const bottom = i * 20;
+        return `<div class="layer-exploded-card" data-layer="${l.key}" style="bottom:${bottom}px;z-index:${i + 1}">
+          <div class="layer-exploded-badge" style="background:${l.color}">${l.letter}</div>
+          <div class="layer-exploded-thumb" id="thumb-${l.key}">⬜</div>
+          <div class="layer-exploded-info">
+            <strong>${l.title}</strong>
+            <span id="label-${l.key}">لم يُختَر بعد</span>
+          </div>
+        </div>`;
+      }).join("");
+    }
+
+    function setActiveLayer(key) {
+      activeLayerKey = key;
+      document.querySelectorAll(".layer-exploded-card").forEach((c) => {
+        c.classList.toggle("active-layer", c.dataset.layer === key);
+      });
+      document.querySelectorAll(".principle-item").forEach((item) => {
+        item.classList.toggle("layer-focus", item.dataset.key === key);
+      });
+    }
+
+    function updateLayerPreview(highlightKey) {
+      if (highlightKey) setActiveLayer(highlightKey);
+
+      const env = getValue("environment");
+      const subject = getValue("subject");
+      const lighting = getValue("lighting");
+      const framing = getValue("framing");
+      const aspect = getValue("aspect");
+      const details = getValue("details");
+      const style = getValue("style");
+
+      const hasAny = [env, subject, lighting, framing, aspect, details, style].some(Boolean);
+      layerEmptyState.style.display = hasAny ? "none" : "flex";
+
+      const envOpt = findOption("environment", env);
+      const subOpt = findOption("subject", subject);
+      const lightOpt = findOption("lighting", lighting);
+      const frameOpt = findOption("framing", framing);
+      const aspectOpt = findOption("aspect", aspect);
+      const styleOpt = findOption("style", style);
+
+      const layerEnv = document.getElementById("layerEnv");
+      const layerSubject = document.getElementById("layerSubject");
+      const layerLighting = document.getElementById("layerLighting");
+      const layerFraming = document.getElementById("layerFraming");
+      const layerFramingPreview = document.getElementById("layerFramingPreview");
+      const layerDetails = document.getElementById("layerDetails");
+      const layerStylePreview = document.getElementById("layerStylePreview");
+
+      const envSrc = getLayerSrc(envOpt);
+      layerEnv.className = "layer-slot env";
+      if (envSrc) {
+        layerEnv.style.backgroundImage = `url('${envSrc}')`;
+        layerEnv.classList.add("active");
+      } else if (env) {
+        layerEnv.style.backgroundImage = "linear-gradient(135deg,#1e3a5f,#0d9f6e)";
+        layerEnv.classList.add("active");
+      } else {
+        layerEnv.style.backgroundImage = "";
+        layerEnv.classList.remove("active");
+      }
+
+      const subSrc = getLayerSrc(subOpt);
+      layerSubject.className = "layer-slot subject";
+      if (subSrc) {
+        layerSubject.innerHTML = `<img src="${subSrc}" alt="" />`;
+        layerSubject.classList.add("active");
+      } else if (subject) {
+        layerSubject.innerHTML = `<div style="width:100%;height:100%;display:grid;place-items:center;background:rgba(79,110,247,0.35);border-radius:6px;color:#fff;font-size:0.75rem;padding:0.5rem;text-align:center">${subject}</div>`;
+        layerSubject.classList.add("active");
+      } else {
+        layerSubject.innerHTML = "";
+        layerSubject.classList.remove("active");
+      }
+
+      const lightSrc = getLayerSrc(lightOpt);
+      layerLighting.className = "layer-slot lighting";
+      if (lighting) {
+        const cls = LIGHTING_CLASS[lighting] || "natural";
+        layerLighting.classList.add("active", cls);
+        if (lightSrc) {
+          layerLighting.classList.add("has-ref");
+          layerLighting.style.backgroundImage = `linear-gradient(160deg, rgba(0,0,0,0.15), rgba(0,0,0,0.35)), url('${lightSrc}')`;
+        } else {
+          layerLighting.classList.remove("has-ref");
+          layerLighting.style.backgroundImage = "";
+        }
+      } else {
+        layerLighting.classList.remove("active", "has-ref", "film", "dramatic", "natural", "foggy", "accent");
+        layerLighting.style.backgroundImage = "";
+      }
+
+      layerFraming.className = "layer-slot framing-vignette";
+      layerFramingPreview.className = "layer-slot framing-preview";
+      if (framing) {
+        layerFraming.classList.add("active");
+        const scale = FRAMING_SCALE[framing] || 1;
+        layerComposeInner.style.transform = `scale(${scale})`;
+        const frameSrc = getLayerSrc(frameOpt);
+        if (frameSrc) {
+          layerFramingPreview.style.backgroundImage = `url('${frameSrc}')`;
+          layerFramingPreview.classList.add("active");
+        } else {
+          layerFramingPreview.style.backgroundImage = "";
+          layerFramingPreview.classList.remove("active");
+        }
+      } else {
+        layerFraming.classList.remove("active");
+        layerFramingPreview.classList.remove("active");
+        layerFramingPreview.style.backgroundImage = "";
+        layerComposeInner.style.transform = "scale(1)";
+      }
+
+      const detailsOpt = findOption("details", details);
+      const detailsSrc = getLayerSrc(detailsOpt);
+      layerDetails.className = "layer-slot details";
+      if (detailsSrc) {
+        layerDetails.style.backgroundImage = `url('${detailsSrc}')`;
+        layerDetails.classList.add("active", "has-ref");
+      } else if (details) {
+        layerDetails.style.backgroundImage = "";
+        layerDetails.classList.add("active");
+        layerDetails.classList.remove("has-ref");
+      } else {
+        layerDetails.style.backgroundImage = "";
+        layerDetails.classList.remove("active", "has-ref");
+      }
+
+      layerStylePreview.className = "layer-slot style-preview";
+      const styleSrc = getLayerSrc(styleOpt);
+      if (style && styleSrc) {
+        layerStylePreview.style.backgroundImage = `url('${styleSrc}')`;
+        layerStylePreview.classList.add("active");
+      } else {
+        layerStylePreview.style.backgroundImage = "";
+        layerStylePreview.classList.remove("active");
+      }
+
+      layerCompose.className = "layer-compose";
+      if (aspect && ASPECT_RATIO[aspect]) {
+        layerCompose.style.aspectRatio = ASPECT_RATIO[aspect];
+      } else {
+        layerCompose.style.aspectRatio = "4 / 5";
+      }
+      if (style) {
+        const styleCls = STYLE_CLASS[style] || "style-cinematic";
+        layerCompose.classList.add(styleCls);
+      }
+
+      LAYER_STACK.forEach((l) => {
+        const val = getValue(l.key);
+        const filled = Boolean(val);
+        const card = layerExploded.querySelector(`[data-layer="${l.key}"]`);
+        const thumbEl = document.getElementById(`thumb-${l.key}`);
+        const labelEl = document.getElementById(`label-${l.key}`);
+        const chip = layerProgress.querySelector(`[data-layer="${l.key}"]`);
+
+        if (card) card.classList.toggle("filled", filled);
+        if (chip) chip.classList.toggle("done", filled);
+        if (labelEl) labelEl.textContent = getLayerLabel(l.key);
+
+        const opt = findOption(l.key, val);
+        const thumb = getOptionThumb(opt) || (filled ? { type: "emoji", emoji: "✏️" } : null);
+        if (thumbEl) thumbEl.innerHTML = renderThumbHtml(thumb);
+      });
+    }
+
+    const toolPanel = document.getElementById("toolPanel");
+    const principleList = document.getElementById("principleList");
+    const generateBtn = document.getElementById("generateBtn");
+    const resetBtn = document.getElementById("resetBtn");
+    const toolResult = document.getElementById("toolResult");
+    const resultText = document.getElementById("resultText");
+    const copyBtn = document.getElementById("copyBtn");
+    const copyToast = document.getElementById("copyToast");
+    const spiceGrid = document.getElementById("spiceGrid");
+    const spiceSelectAll = document.getElementById("spiceSelectAll");
+    const spiceClearAll = document.getElementById("spiceClearAll");
+
+    function buildSpiceGrids() {
+      spiceGrid.innerHTML = SPICE_KEYWORDS.map((kw) =>
+        `<button type="button" class="spice-chip" data-value="${kw.value}">
+          <span class="kw-emoji">${kw.emoji}</span>
+          <span class="kw-en">${kw.value}</span>
+          <span class="kw-ar">${kw.label}</span>
+        </button>`
+      ).join("");
+
+      spiceGrid.querySelectorAll(".spice-chip").forEach((chip) => {
+        chip.addEventListener("click", () => {
+          const val = chip.dataset.value;
+          if (selectedSpices.has(val)) {
+            selectedSpices.delete(val);
+            chip.classList.remove("selected");
+          } else {
+            selectedSpices.add(val);
+            chip.classList.add("selected");
+          }
+        });
+      });
+    }
+
+    function setAllSpices(selectAll) {
+      spiceGrid.querySelectorAll(".spice-chip").forEach((chip) => {
+        if (selectAll) {
+          selectedSpices.add(chip.dataset.value);
+          chip.classList.add("selected");
+        } else {
+          selectedSpices.delete(chip.dataset.value);
+          chip.classList.remove("selected");
+        }
+      });
+    }
+
+    spiceSelectAll.addEventListener("click", () => setAllSpices(true));
+    spiceClearAll.addEventListener("click", () => setAllSpices(false));
+
+    function renderOptionVisual(opt) {
+      const src = getLayerSrc(opt);
+      if (src) {
+        return `<div class="option-img-wrap">
+          <img class="option-img" src="${src}" alt="${opt.label}" loading="lazy"
+            onerror="this.style.display='none';this.nextElementSibling.style.display='flex'" />
+          <span class="option-fallback" style="display:none">${opt.emoji || "🖼️"}</span>
+        </div>`;
+      }
+      if (opt.sprite) {
+        const sheet = opt.spriteSheet || "assets/framing-shots.png";
+        const size = opt.spriteSize || "200% 400%";
+        return `<div class="option-img-wrap">
+          <div class="option-sprite" style="background-image:url('${sheet}');background-size:${size};background-position:${opt.sprite}"></div>
+        </div>`;
+      }
+      if (opt.aspectClass) {
+        return `<div class="option-img-wrap">
+          <div class="option-aspect-preview ${opt.aspectClass}"></div>
+        </div>`;
+      }
+      return `<div class="option-img-wrap">
+        <span class="option-fallback">${opt.emoji || "🖼️"}</span>
+      </div>`;
+    }
+
+    function buildPrincipleList() {
+      principleList.innerHTML = PRINCIPLES.map((p) => {
+        const hasOptions = p.options.length > 0;
+        const optionsHtml = hasOptions
+          ? `<p class="options-label">اختر من الصور — شاهد الطبقة تتكوّن على اليسار:</p>
+             <div class="options-grid${p.gridClass ? " " + p.gridClass : ""}" data-key="${p.key}">
+               ${p.options.map((opt) =>
+                 `<button type="button" class="option-card" data-value="${opt.value}">
+                    ${renderOptionVisual(opt)}
+                    <span class="option-label">${opt.label}</span>
+                  </button>`
+               ).join("")}
+             </div>
+             <p class="options-label">أو اكتب بنفسك:</p>`
+          : `<p class="options-label">اختر من الصور أو اكتب بنفسك:</p>`;
+
+        const inputTag = p.multiline
+          ? `<textarea class="principle-input" id="input-${p.key}" placeholder="${p.placeholder}"></textarea>`
+          : `<input type="text" class="principle-input" id="input-${p.key}" placeholder="${p.placeholder}" />`;
+
+        return `
+          <div class="principle-item" data-key="${p.key}">
+            <div class="principle-head">
+              <div class="principle-letter">${p.letter}</div>
+              <div class="principle-info">
+                <h3>${p.title}</h3>
+                <p>${p.desc}</p>
+              </div>
+            </div>
+            ${optionsHtml}
+            ${inputTag}
+          </div>`;
+      }).join("");
+
+      PRINCIPLES.forEach((p) => {
+        if (p.options.length === 0) return;
+        const grid = principleList.querySelector(`.options-grid[data-key="${p.key}"]`);
+        grid.querySelectorAll(".option-card").forEach((card) => {
+          card.addEventListener("click", () => {
+            grid.querySelectorAll(".option-card").forEach((c) => c.classList.remove("selected"));
+            card.classList.add("selected");
+            state[p.key].chip = card.dataset.value;
+            document.getElementById(`input-${p.key}`).value = card.dataset.value;
+            updateLayerPreview(p.key);
+          });
+        });
+      });
+
+      PRINCIPLES.forEach((p) => {
+        const input = document.getElementById(`input-${p.key}`);
+        input.addEventListener("input", () => {
+          state[p.key].custom = input.value.trim();
+          if (p.options.length > 0) {
+            const match = p.options.find((o) => o.value === input.value.trim());
+            const grid = principleList.querySelector(`.options-grid[data-key="${p.key}"]`);
+            if (grid) {
+              grid.querySelectorAll(".option-card").forEach((c) => {
+                c.classList.toggle("selected", c.dataset.value === (match && match.value));
+              });
+            }
+            state[p.key].chip = match ? match.value : "";
+          }
+          updateLayerPreview(p.key);
+        });
+      });
+
+      principleList.querySelectorAll(".principle-item").forEach((item) => {
+        item.addEventListener("mouseenter", () => setActiveLayer(item.dataset.key));
+      });
+    }
+
+
+    function getValue(key) {
+      const input = document.getElementById(`input-${key}`);
+      return (input ? input.value.trim() : "") || state[key].chip || "";
+    }
+
+    function deriveDepthOfField(framing) {
+      const f = framing.toLowerCase();
+      if (f.includes("extreme close") || f.includes("close-up")) {
+        return "shallow depth of field with creamy bokeh";
+      }
+      if (f.includes("ultra-wide") || f.includes("wide shot")) {
+        return "deep depth of field with sharp environmental detail";
+      }
+      return "balanced depth of field";
+    }
+
+    function deriveDistortion(framing) {
+      const f = framing.toLowerCase();
+      if (f.includes("ultra-wide")) return "subtle barrel distortion";
+      if (f.includes("extreme close")) return "minimal optical distortion";
+      return "none";
+    }
+
+    function deriveTone(style, lighting) {
+      const s = style.toLowerCase();
+      const l = lighting.toLowerCase();
+      if (l.includes("dramatic")) return "dramatic and intense";
+      if (l.includes("foggy")) return "mysterious and atmospheric";
+      if (l.includes("film")) return "cinematic and moody";
+      if (l.includes("natural")) return "bright and natural";
+      if (l.includes("accent")) return "focused and stylized";
+      if (s.includes("vintage") || s.includes("retro")) return "retro and nostalgic";
+      if (s.includes("cinematic")) return "cinematic and immersive";
+      if (s.includes("commercial")) return "polished and professional";
+      return "cinematic and balanced";
+    }
+
+    function deriveColorPalette(lighting, environment) {
+      const l = lighting.toLowerCase();
+      const e = environment.toLowerCase();
+      if (l.includes("film") || l.includes("dramatic")) return "warm amber, deep shadows, muted highlights";
+      if (l.includes("natural")) return "soft natural tones, balanced whites, gentle shadows";
+      if (l.includes("foggy")) return "cool greys, desaturated blues, soft misty hues";
+      if (e.includes("beach") || e.includes("tropical")) return "golden sand, ocean blues, sunset oranges";
+      if (e.includes("forest")) return "rich greens, earthy browns, dappled sunlight";
+      if (e.includes("city")) return "urban neutrals, concrete greys, ambient city lights";
+      return "harmonious natural color tones";
+    }
+
+    function deriveColorGrading(style, lighting) {
+      const s = style.toLowerCase();
+      const l = lighting.toLowerCase();
+      if (s.includes("cinematic") || l.includes("film")) return "warm cinematic color grading";
+      if (l.includes("dramatic")) return "high-contrast cinematic grading";
+      if (l.includes("foggy")) return "soft desaturated grading";
+      if (s.includes("vintage")) return "vintage film color grading";
+      if (s.includes("commercial")) return "clean commercial color grading";
+      return "natural balanced color grading";
+    }
+
+    function deriveEnvironmentFeel(environment) {
+      const e = environment.toLowerCase();
+      if (e.includes("studio")) return "controlled, clean, and professional";
+      if (e.includes("beach") || e.includes("tropical")) return "relaxed, vibrant, and sun-kissed";
+      if (e.includes("forest")) return "organic, lush, and immersive";
+      if (e.includes("city")) return "urban, dynamic, and lived-in";
+      if (e.includes("coffee")) return "cozy, warm, and inviting";
+      if (e.includes("desert")) return "vast, arid, and dramatic";
+      if (e.includes("indoor")) return "intimate, detailed, and atmospheric";
+      return "immersive and contextually rich";
+    }
+
+    function deriveFilmGrain(style, lighting) {
+      const s = style.toLowerCase();
+      const l = lighting.toLowerCase();
+      if (s.includes("cinematic") || l.includes("film")) return "subtle cinematic film grain";
+      if (s.includes("vintage")) return "visible vintage film grain";
+      if (s.includes("ultra realistic") || s.includes("commercial")) return "minimal clean grain";
+      return "light natural film grain";
+    }
+
+    function buildMasterPrompt(data, keywords) {
+      const {
+        subject, environment, lighting, framing, aspect, details, style
+      } = data;
+
+      const composition = framing || "a balanced medium shot";
+      const cameraSettings = aspect
+        ? `${aspect}, professional DSLR quality, high resolution`
+        : "professional camera settings, high resolution";
+      const filmGrain = deriveFilmGrain(style, lighting);
+      const distortion = deriveDistortion(framing);
+      const lensArtifacts = details
+        ? `subtle natural lens character, ${details}`
+        : "subtle natural lens character";
+      const depthOfField = deriveDepthOfField(framing);
+      const subjectLine = subject || "subject with natural expression and authentic presence";
+      const location = environment || "a visually compelling location";
+      const timeLighting = lighting || "natural daylight";
+      const envFeel = deriveEnvironmentFeel(environment);
+      const action = "posed naturally for the camera";
+      const props = details || "none";
+      const lightingSetup = lighting || "soft, balanced natural lighting";
+      const tone = deriveTone(style, lighting);
+      const colorPalette = deriveColorPalette(lighting, environment);
+      const visualStyle = style || "cinematic photorealistic";
+      const colorGrading = deriveColorGrading(style, lighting);
+
+      let prompt = `Generate a cinematic photorealistic image in ${composition} with ${cameraSettings}.
+Apply ${filmGrain}.
+Lens effects include ${distortion}, ${lensArtifacts}, and ${depthOfField}.
+The subject is a ${subjectLine}.
+The scene is set in ${location} at ${timeLighting}.
+Environment should feel ${envFeel}.
+Subject action: ${action}.
+Props: ${props}.
+Lighting: ${lightingSetup}.
+Tone: ${tone}.
+Color palette: ${colorPalette}.
+Style: ${visualStyle} with ${colorGrading}.`;
+
+      if (keywords.length > 0) {
+        prompt += `\nQuality keywords: ${keywords.join(", ")}.`;
+      }
+
+      return prompt;
+    }
+
+    function generatePrompt() {
+      saveCurrentStep();
+
+      const data = {
+        subject: getValue("subject"),
+        environment: getValue("environment"),
+        lighting: getValue("lighting"),
+        framing: getValue("framing"),
+        aspect: getValue("aspect"),
+        details: getValue("details"),
+        style: getValue("style")
+      };
+
+      const keywords = [...selectedSpices];
+      const hasAny = Object.values(data).some(Boolean) || keywords.length > 0;
+      if (!hasAny) {
+        resultText.textContent = "يرجى ملء حقل واحد على الأقل أو اختيار كلمات توابل.";
+        toolResult.classList.add("visible");
+        return;
+      }
+
+      resultText.textContent = buildMasterPrompt(data, keywords);
+      toolResult.classList.add("visible");
+      toolResult.scrollIntoView({ behavior: "smooth", block: "nearest" });
+    }
+
+    function saveCurrentStep() {
+      PRINCIPLES.forEach((p) => {
+        const input = document.getElementById(`input-${p.key}`);
+        if (input) state[p.key].custom = input.value.trim();
+      });
+    }
+
+    function resetTool() {
+      PRINCIPLES.forEach((p) => {
+        state[p.key] = { chip: "", custom: "" };
+        const input = document.getElementById(`input-${p.key}`);
+        if (input) input.value = "";
+        if (p.options.length > 0) {
+          const grid = principleList.querySelector(`.options-grid[data-key="${p.key}"]`);
+          if (grid) grid.querySelectorAll(".option-card").forEach((c) => c.classList.remove("selected"));
+        }
+      });
+      setAllSpices(false);
+      toolResult.classList.remove("visible");
+      resultText.textContent = "";
+      updateLayerPreview();
+    }
+
+    generateBtn.addEventListener("click", generatePrompt);
+    resetBtn.addEventListener("click", resetTool);
+
+    copyBtn.addEventListener("click", async () => {
+      const text = resultText.textContent;
+      try {
+        await navigator.clipboard.writeText(text);
+      } catch {
+        const range = document.createRange();
+        range.selectNode(resultText);
+        window.getSelection().removeAllRanges();
+        window.getSelection().addRange(range);
+        document.execCommand("copy");
+      }
+      copyToast.classList.add("show");
+      setTimeout(() => copyToast.classList.remove("show"), 2200);
+    });
+
+    buildPrincipleList();
+    buildSpiceGrids();
+    buildExplodedStack();
+    buildLayerProgress();
+    updateLayerPreview();
+  </script>
+</body>
+</html>

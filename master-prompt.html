@@ -1,0 +1,316 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Master Prompt — الشرح الكامل | SELF ADS</title>
+  <style>
+    :root {
+      --bg: #f4f6fb; --bg-soft: #eef1f8; --surface: #fff; --text: #1a2233;
+      --muted: #5c667a; --border: #dde3ef; --accent: #4f6ef7; --accent-soft: #e8edff;
+      --accent-2: #7c5cbf; --master-color: #92400e; --master-soft: #fef3c7;
+      --success: #0d9f6e; --radius: 18px; --radius-sm: 12px;
+      --shadow: 0 8px 32px rgba(26,34,51,0.07); --shadow-hover: 0 16px 48px rgba(26,34,51,0.12);
+    }
+    html { scroll-behavior: smooth; }
+    * { box-sizing: border-box; margin: 0; padding: 0; }
+    body {
+      font-family: "Segoe UI", Tahoma, Arial, sans-serif;
+      background: var(--bg); color: var(--text); line-height: 1.8; min-height: 100vh;
+    }
+    body::before {
+      content: ""; position: fixed; inset: 0;
+      background: radial-gradient(ellipse 70% 50% at 50% 0%, rgba(245,158,11,0.1), transparent);
+      pointer-events: none; z-index: 0;
+    }
+    .page { position: relative; z-index: 1; max-width: 920px; margin: 0 auto; padding: 1.25rem 1.25rem 3rem; }
+    .top-nav {
+      display: flex; flex-wrap: wrap; align-items: center; justify-content: space-between;
+      gap: 0.75rem; margin-bottom: 1.5rem; padding-bottom: 1rem; border-bottom: 1px solid var(--border);
+    }
+    .back-link, .nav-link {
+      font-size: 0.8rem; font-weight: 600; text-decoration: none; color: var(--muted);
+      padding: 0.35rem 0.6rem; border-radius: 99px; border: 1px solid transparent; transition: all 0.2s;
+    }
+    .back-link:hover, .nav-link:hover { color: var(--master-color); background: var(--master-soft); border-color: var(--border); }
+    .nav-links { display: flex; flex-wrap: wrap; gap: 0.25rem; }
+    .nav-link.active { color: var(--master-color); background: var(--master-soft); border-color: #f59e0b; }
+    .topic-hero {
+      text-align: center; background: linear-gradient(135deg, var(--surface), #fffbeb);
+      border: 1px solid var(--border); border-radius: var(--radius); padding: 2rem 1.5rem;
+      margin-bottom: 1.75rem; box-shadow: var(--shadow);
+    }
+    .topic-badge {
+      display: inline-block; background: linear-gradient(135deg, #d97706, #f59e0b);
+      color: #fff; font-size: 0.78rem; font-weight: 700; padding: 0.3rem 0.85rem;
+      border-radius: 99px; margin-bottom: 0.75rem;
+    }
+    .topic-hero .en-title { font-size: 0.95rem; color: var(--master-color); font-weight: 800; letter-spacing: 0.06em; direction: ltr; }
+    .topic-hero h1 { font-size: clamp(1.4rem, 4vw, 1.9rem); font-weight: 800; margin: 0.5rem 0; }
+    .topic-hero p { color: var(--muted); font-size: 0.95rem; max-width: 620px; margin: 0 auto; }
+    .self-ads-tag {
+      display: inline-block; margin-top: 1rem; font-size: 0.8rem; font-weight: 700;
+      background: var(--master-soft); color: var(--master-color); padding: 0.3rem 0.85rem; border-radius: 99px;
+    }
+    .intro-box {
+      background: var(--surface); border: 1px solid var(--border); border-radius: var(--radius);
+      padding: 1.25rem 1.5rem; margin-bottom: 1.75rem; box-shadow: var(--shadow);
+    }
+    .intro-box p { color: var(--muted); font-size: 0.92rem; margin-bottom: 0.75rem; }
+    .intro-box p:last-child { margin-bottom: 0; }
+    .section-head {
+      font-size: 1.15rem; font-weight: 800; margin-bottom: 1rem;
+      display: flex; align-items: center; gap: 0.5rem;
+    }
+    .template-block {
+      background: #1a2233; color: #e8edf5; border-radius: var(--radius-sm);
+      padding: 1.25rem 1.5rem; margin-bottom: 1.75rem; box-shadow: var(--shadow);
+      font-family: "Courier New", Courier, monospace; font-size: 0.78rem;
+      line-height: 1.85; direction: ltr; text-align: left; overflow-x: auto;
+    }
+    .template-block .placeholder { color: #fbbf24; font-weight: 700; }
+    .template-line {
+      display: block; margin-bottom: 0.35rem;
+    }
+    .template-map {
+      display: flex; flex-direction: column; gap: 0.75rem; margin-bottom: 2rem;
+    }
+    .map-row {
+      background: var(--surface); border: 1px solid var(--border); border-radius: var(--radius-sm);
+      padding: 1rem 1.15rem; box-shadow: var(--shadow);
+      display: grid; grid-template-columns: 1fr; gap: 0.5rem;
+    }
+    @media (min-width: 640px) {
+      .map-row { grid-template-columns: 1.1fr 1fr; align-items: start; }
+    }
+    .map-en {
+      font-size: 0.78rem; font-family: "Courier New", Courier, monospace;
+      color: var(--accent-2); direction: ltr; text-align: left; line-height: 1.6;
+    }
+    .map-ar { font-size: 0.88rem; color: var(--muted); }
+    .map-ar strong { color: var(--text); }
+    .map-tag {
+      display: inline-block; font-size: 0.68rem; font-weight: 700;
+      background: var(--accent-soft); color: var(--accent); padding: 0.1rem 0.5rem;
+      border-radius: 99px; margin-bottom: 0.35rem;
+    }
+    .breakdown-list { display: flex; flex-direction: column; gap: 1rem; margin-bottom: 2rem; }
+    .breakdown-card {
+      background: var(--surface); border: 1px solid var(--border); border-radius: var(--radius-sm);
+      padding: 1.25rem; box-shadow: var(--shadow);
+      transition: border-color 0.2s, transform 0.2s;
+    }
+    .breakdown-card:hover { border-color: #f59e0b; transform: translateY(-2px); }
+    .breakdown-head { display: flex; flex-wrap: wrap; align-items: baseline; gap: 0.5rem; margin-bottom: 0.65rem; }
+    .breakdown-head .en { font-size: 0.82rem; font-weight: 800; color: var(--master-color); direction: ltr; }
+    .breakdown-head .ar { font-size: 1rem; font-weight: 700; }
+    .quote-en {
+      background: var(--bg-soft); border-right: 3px solid #f59e0b;
+      padding: 0.75rem 1rem; margin-bottom: 0.75rem;
+      font-size: 0.8rem; font-family: "Courier New", Courier, monospace;
+      direction: ltr; text-align: left; color: #2d3748; line-height: 1.65;
+      border-radius: 0 10px 10px 0;
+    }
+    .breakdown-points { list-style: none; }
+    .breakdown-points li {
+      font-size: 0.88rem; color: var(--muted); padding: 0.3rem 0;
+      padding-right: 1.1rem; position: relative; line-height: 1.65;
+    }
+    .breakdown-points li::before {
+      content: "→"; position: absolute; right: 0; color: #f59e0b; font-weight: 700;
+    }
+    .recipe-box {
+      background: linear-gradient(135deg, #fef9e7, #fff8e1);
+      border: 2px solid #f59e0b; border-radius: var(--radius);
+      padding: 1.5rem 1.75rem; margin-bottom: 2rem; box-shadow: var(--shadow);
+    }
+    .recipe-box h2 { font-size: 1.1rem; font-weight: 800; color: var(--master-color); margin-bottom: 0.75rem; }
+    .recipe-box p { font-size: 0.92rem; color: #78350f; line-height: 1.85; margin-bottom: 0.65rem; }
+    .recipe-box p:last-child { margin-bottom: 0; }
+    .cross-nav { display: grid; grid-template-columns: repeat(3, 1fr); gap: 1rem; margin-top: 2rem; }
+    .cross-card {
+      background: var(--surface); border: 1px solid var(--border); border-radius: var(--radius-sm);
+      padding: 1.25rem; text-align: center; text-decoration: none; color: inherit;
+      transition: all 0.2s; box-shadow: var(--shadow);
+    }
+    .cross-card:hover { border-color: #f59e0b; transform: translateY(-3px); box-shadow: var(--shadow-hover); }
+    .cross-card span { font-size: 1.5rem; display: block; margin-bottom: 0.35rem; }
+    .cross-card strong { display: block; font-size: 0.95rem; margin-bottom: 0.25rem; }
+    .cross-card small { color: var(--muted); font-size: 0.8rem; }
+    .btn-primary {
+      display: inline-block; padding: 0.85rem 1.75rem;
+      background: linear-gradient(135deg, var(--accent), var(--accent-2)); color: #fff;
+      font-weight: 700; text-decoration: none; border-radius: 99px;
+      box-shadow: 0 8px 24px rgba(79,110,247,0.3); transition: transform 0.2s;
+    }
+    .btn-primary:hover { transform: translateY(-2px); }
+    .footer-cta { text-align: center; margin-top: 2rem; }
+    .footer-note { text-align: center; margin-top: 1.5rem; font-size: 0.85rem; color: var(--muted); }
+    @media (max-width: 600px) { .cross-nav { grid-template-columns: 1fr; } }
+  </style>
+</head>
+<body>
+  <div class="page">
+    <nav class="top-nav">
+      <a href="index.html" class="back-link">← الدليل الرئيسي</a>
+      <div class="nav-links">
+        <a href="framing.html" class="nav-link">📷 Framing</a>
+        <a href="lighting.html" class="nav-link">💡 Lighting</a>
+        <a href="aspect.html" class="nav-link">📐 Aspect</a>
+        <a href="style.html" class="nav-link">🎨 Style</a>
+        <a href="master-prompt.html" class="nav-link active">👑 Master</a>
+        <a href="tool.html" class="nav-link">🛠️ الأداة</a>
+      </div>
+    </nav>
+
+    <header class="topic-hero">
+      <span class="topic-badge">الخطوة الأخيرة في SELF ADS</span>
+      <p class="en-title">MASTER PROMPT</p>
+      <h1>Master Prompt — البرومبت المتكامل</h1>
+      <p>بعد ما فكّكنا كل عنصر لوحده، دلوقتي نجمع المكونات في وصفة واحدة كاملة يفهمها الذكاء الاصطناعي ويُنتج منها صورة احترافية.</p>
+      <span class="self-ads-tag">Master Prompt = تجميع SELF ADS + الكاميرا + المزاج + كلمات التوابل</span>
+    </header>
+
+    <div class="recipe-box">
+      <h2>🍳 من وصفة لصورة كاملة</h2>
+      <p>طول الوقت اللي فات كنا بنفكك البرومبت زي ما بنفكك وصفة أكلة: عرفنا المكونات (الموضوع، الزاوية، الإضاءة، الخلفية، التفاصيل).</p>
+      <p>دلوقتي بقى جايين نعمل أهم خطوة: <strong>نجمع كل المكونات دي مع بعض في برومبت واحد متكامل.</strong></p>
+      <p>زي ما الطباخ المحترف بيخلط المكونات في التوقيت الصح عشان يطلع أكلة مظبوطة، إحنا كمان هنركّب الكلمات صح ونرتبها في جملة كاملة توصل للذكاء الاصطناعي وصفة واضحة: إيه الموضوع، فين مكانه، إزاي الإضاءة، وعايزين النتيجة النهائية شكلها عامل إزاي.</p>
+      <p>الجزء ده هو اللي بيحوّل أي فكرة في دماغك لصورة كاملة المعالم — مش مجرد وصف بسيط، لكن مشهد احترافي متكامل ممكن يطلعلك صورة إعلان أو لقطة سينمائية.</p>
+    </div>
+
+    <h2 class="section-head"><span>📋</span> قالب الـ Master Prompt</h2>
+    <p style="color:var(--muted);font-size:0.9rem;margin-bottom:1rem;">القالب اللي الأداة بتولّده — كل جزء بين أقواس مربعة تملأه من اختياراتك:</p>
+
+    <div class="template-block" aria-label="قالب Master Prompt">
+      <span class="template-line">Generate a cinematic photorealistic image in <span class="placeholder">[composition]</span> with <span class="placeholder">[camera settings]</span>.</span>
+      <span class="template-line">Apply <span class="placeholder">[film grain level]</span>.</span>
+      <span class="template-line">Lens effects include <span class="placeholder">[optics distortion if any]</span>, <span class="placeholder">[lens artifacts if any]</span>, and <span class="placeholder">[depth of field]</span>.</span>
+      <span class="template-line">The subject is a <span class="placeholder">[age / gender / body type / expression]</span> wearing <span class="placeholder">[wardrobe description]</span> with <span class="placeholder">[hair style / grooming / accessories]</span>.</span>
+      <span class="template-line">The scene is set in <span class="placeholder">[location description]</span> at <span class="placeholder">[time of day / lighting type]</span>.</span>
+      <span class="template-line">Environment should feel <span class="placeholder">[environment details: clean, messy, futuristic, etc.]</span>.</span>
+      <span class="template-line">Subject action: <span class="placeholder">[what they are doing: standing, walking, posing, etc.]</span>.</span>
+      <span class="template-line">Props: <span class="placeholder">[list if any, or none]</span>.</span>
+      <span class="template-line">Lighting: <span class="placeholder">[lighting setup: soft, dramatic, diffused, harsh, etc.]</span>.</span>
+      <span class="template-line">Tone: <span class="placeholder">[mood: moody, cinematic, bright, retro, etc.]</span>.</span>
+      <span class="template-line">Color palette: <span class="placeholder">[dominant colors]</span>.</span>
+      <span class="template-line">Style: <span class="placeholder">[visual aesthetic: cinematic, vintage, retro-futuristic, modern, etc.]</span> with <span class="placeholder">[color grading style]</span>.</span>
+      <span class="template-line" style="margin-top:0.5rem;color:#86efac;">Quality keywords: <span class="placeholder">[spice keywords from tool]</span>.</span>
+    </div>
+
+    <h2 class="section-head"><span>🧩</span> شرح كل سطر في القالب</h2>
+    <div class="template-map">
+      <div class="map-row">
+        <div class="map-en">Generate a cinematic photorealistic image in [composition] with [camera settings].</div>
+        <div class="map-ar"><span class="map-tag">F — Framing</span><strong>نوع اللقطة والكاميرا</strong> — تحدد التكوين (close-up، wide…) وإعدادات العدسة من البداية.</div>
+      </div>
+      <div class="map-row">
+        <div class="map-en">Apply [film grain level]. Lens effects include [distortion], [artifacts], and [depth of field].</div>
+        <div class="map-ar"><span class="map-tag">D — Details</span><strong>تأثيرات العدسة</strong> — حبيبات الفيلم، تشويه fisheye، وحدة العزل البصري (bokeh).</div>
+      </div>
+      <div class="map-row">
+        <div class="map-en">The subject is a [age / gender / body type / expression] wearing [wardrobe] with [hair / accessories].</div>
+        <div class="map-ar"><span class="map-tag">S — Subject</span><strong>الموضوع الأساسي</strong> — من في الصورة؟ ماذا يرتدي؟ تعبيره وإكسسواراته.</div>
+      </div>
+      <div class="map-row">
+        <div class="map-en">The scene is set in [location] at [time of day / lighting type].</div>
+        <div class="map-ar"><span class="map-tag">E — Environment</span><strong>المكان والتوقيت</strong> — أين المشهد؟ صباح، غروب، ليل؟</div>
+      </div>
+      <div class="map-row">
+        <div class="map-en">Environment should feel [clean, messy, futuristic…]. Subject action: [posing, walking…]. Props: [list or none].</div>
+        <div class="map-ar"><span class="map-tag">E + D</span><strong>أجواء البيئة والتفاعل</strong> — شكل المكان، حركة الموضوع، والأدوات في المشهد.</div>
+      </div>
+      <div class="map-row">
+        <div class="map-en">Lighting: [soft, dramatic, diffused…]. Tone: [moody, cinematic, bright…].</div>
+        <div class="map-ar"><span class="map-tag">L — Lighting</span><strong>الإضاءة والمزاج</strong> — نوع الضوء والإحساس العام للصورة.</div>
+      </div>
+      <div class="map-row">
+        <div class="map-en">Color palette: [dominant colors]. Style: [aesthetic] with [color grading].</div>
+        <div class="map-ar"><span class="map-tag">S — Style + A</span><strong>الألوان والستايل</strong> — لوحة الألوان، الأسلوب البصري، وتدرج الألوان السينمائي.</div>
+      </div>
+      <div class="map-row">
+        <div class="map-en">Quality keywords: photorealistic, 8k, sharp focus…</div>
+        <div class="map-ar"><span class="map-tag">🧂 Spice</span><strong>كلمات التوابل</strong> — ترفع الواقعية والدقة في آخر البرومبت.</div>
+      </div>
+    </div>
+
+    <h2 class="section-head"><span>🔬</span> تفكيك مثال حقيقي — فرخة البار الشاطئي</h2>
+    <p style="color:var(--muted);font-size:0.9rem;margin-bottom:1.25rem;">شوف إزاي كل جزء في البرومبت بيخدم هدف بصري محدد:</p>
+
+    <div class="breakdown-list">
+      <article class="breakdown-card">
+        <div class="breakdown-head"><span class="en">SUBJECT</span><span class="ar">الموضوع الأساسي</span></div>
+        <div class="quote-en">"a brown chicken (hen)… drinking through a straw from a tall glass of juice… wearing stylish sunglasses and a Hawaiian shirt"</div>
+        <ul class="breakdown-points">
+          <li>اخترت بوضوح الشخصية: فرخة بنية</li>
+          <li>ضفت تفاصيل "شخصية" غريبة (نظارة شمس، قميص هاواي) بتدي عنصر شخصنة + كوميديا</li>
+          <li>في تفاعل مع البيئة (تشرب عصير من كباية بالشفاط)</li>
+          <li>النتيجة: موضوع غني ومليان بدل ما يكون مجرد حيوان عادي</li>
+        </ul>
+      </article>
+
+      <article class="breakdown-card">
+        <div class="breakdown-head"><span class="en">CAMERA ANGLE &amp; LENS</span><span class="ar">الزاوية والعدسة</span></div>
+        <div class="quote-en">"Shot with an exaggerated fisheye lens distortion, the hen's face appears very close and oversized"</div>
+        <ul class="breakdown-points">
+          <li>تحديد واضح جداً للعدسة: fisheye → بتشوه الشكل وتكبر الحاجة اللي قريبة من الكاميرا</li>
+          <li>استُخدمت علشان تخلي المنقار والوش ضخم وقريب → تضيف كوميديا وسريالية</li>
+        </ul>
+      </article>
+
+      <article class="breakdown-card">
+        <div class="breakdown-head"><span class="en">LIGHTING</span><span class="ar">الإضاءة</span></div>
+        <div class="quote-en">"cinematic soft golden light mixed with ambient bar lighting, casting warm highlights and reflections"</div>
+        <ul class="breakdown-points">
+          <li>فيه مزج إضاءتين: Soft golden cinematic light → مود غروب/سينمائي</li>
+          <li>Ambient bar lighting → ينقل إحساس المكان (بار شاطئي)</li>
+        </ul>
+      </article>
+
+      <article class="breakdown-card">
+        <div class="breakdown-head"><span class="en">BACKGROUND &amp; SETTING</span><span class="ar">الخلفية والبيئة</span></div>
+        <div class="quote-en">"a lively beach bar at sunset, with blurred bottles, wooden counter, and a glowing ocean horizon"</div>
+        <ul class="breakdown-points">
+          <li>وصف كامل للبيئة: بار شاطئ، غروب، محيط منور</li>
+        </ul>
+      </article>
+
+      <article class="breakdown-card">
+        <div class="breakdown-head"><span class="en">TEXTURES &amp; EXPRESSION</span><span class="ar">الملمس والتعبير</span></div>
+        <div class="quote-en">"Glossy feathers and bright eyes show detailed texture and expression"</div>
+        <ul class="breakdown-points">
+          <li>إضافة ملمس واضح: الريش لامع، العيون مشرقة</li>
+          <li>النقطة دي مهمة عشان تحارب مشكلة شكل الصور البلاستيك</li>
+        </ul>
+      </article>
+
+      <article class="breakdown-card">
+        <div class="breakdown-head"><span class="en">MOOD &amp; STYLE</span><span class="ar">المزاج والستايل</span></div>
+        <div class="quote-en">"playful, surreal mood--dynamic, humorous, and expressive"</div>
+        <ul class="breakdown-points">
+          <li>وصف الجو العام بيضمن إن النتيجة مش مجرد صورة فوتوغرافية بدون روح</li>
+        </ul>
+      </article>
+
+      <article class="breakdown-card">
+        <div class="breakdown-head"><span class="en">PHOTOREALISM KEYWORDS</span><span class="ar">كلمات الواقعية</span></div>
+        <div class="quote-en">"4k resolution, ultra-detailed, cinematic photorealism"</div>
+        <ul class="breakdown-points">
+          <li>ختمت البرومبت بالكلمات اللي بترفع الجودة: ultra-detailed, cinematic photorealism</li>
+        </ul>
+      </article>
+    </div>
+
+    <div class="cross-nav">
+      <a href="index.html#spice" class="cross-card"><span>🧂</span><strong>كلمات التوابل</strong><small>القسم السابق</small></a>
+      <a href="tool.html" class="cross-card"><span>🛠️</span><strong>الأداة التفاعلية</strong><small>ولّد برومبتك الآن</small></a>
+      <a href="index.html#free-tools" class="cross-card"><span>🎨</span><strong>أدوات التوليد</strong><small>جرّب البرومبت مجاناً</small></a>
+    </div>
+
+    <div class="footer-cta">
+      <a href="tool.html" class="btn-primary">🛠️ افتح الأداة وولّد Master Prompt</a>
+    </div>
+    <p class="footer-note"><a href="index.html" style="color:var(--master-color);text-decoration:none;">← العودة للصفحة الرئيسية</a></p>
+  </div>
+</body>
+</html>

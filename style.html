@@ -1,0 +1,428 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>الستايل — Style | SELF ADS</title>
+  <style>
+    :root {
+      --bg: #f4f6fb; --bg-soft: #eef1f8; --surface: #fff; --text: #1a2233;
+      --muted: #5c667a; --border: #dde3ef; --accent: #4f6ef7; --accent-soft: #e8edff;
+      --style-color: #be185d; --style-soft: #fce7f3; --success: #0d9f6e; --success-soft: #e6f7f1;
+      --danger: #dc4c4c; --danger-soft: #fdecec;
+      --radius: 18px; --radius-sm: 12px;
+      --shadow: 0 8px 32px rgba(26,34,51,0.07); --shadow-hover: 0 16px 48px rgba(26,34,51,0.12);
+    }
+    html { scroll-behavior: smooth; }
+    * { box-sizing: border-box; margin: 0; padding: 0; }
+    body {
+      font-family: "Segoe UI", Tahoma, Arial, sans-serif;
+      background: var(--bg); color: var(--text); line-height: 1.8; min-height: 100vh;
+    }
+    body::before {
+      content: ""; position: fixed; inset: 0;
+      background: radial-gradient(ellipse 70% 50% at 80% 0%, rgba(190,24,93,0.08), transparent);
+      pointer-events: none; z-index: 0;
+    }
+    .page { position: relative; z-index: 1; max-width: 920px; margin: 0 auto; padding: 1.25rem 1.25rem 3rem; }
+    .top-nav {
+      display: flex; flex-wrap: wrap; align-items: center; justify-content: space-between;
+      gap: 0.75rem; margin-bottom: 1.5rem; padding-bottom: 1rem; border-bottom: 1px solid var(--border);
+    }
+    .back-link, .nav-link {
+      font-size: 0.8rem; font-weight: 600; text-decoration: none; color: var(--muted);
+      padding: 0.35rem 0.6rem; border-radius: 99px; border: 1px solid transparent; transition: all 0.2s;
+    }
+    .back-link:hover, .nav-link:hover { color: var(--style-color); background: var(--style-soft); border-color: var(--border); }
+    .nav-links { display: flex; flex-wrap: wrap; gap: 0.25rem; }
+    .nav-link.active { color: var(--style-color); background: var(--style-soft); border-color: var(--style-color); }
+    .topic-hero {
+      text-align: center; background: linear-gradient(135deg, var(--surface), #fdf2f8);
+      border: 1px solid var(--border); border-radius: var(--radius); padding: 2rem 1.5rem;
+      margin-bottom: 1.75rem; box-shadow: var(--shadow);
+    }
+    .topic-badge {
+      display: inline-block; background: linear-gradient(135deg, #be185d, #f472b6);
+      color: #fff; font-size: 0.78rem; font-weight: 700; padding: 0.3rem 0.85rem;
+      border-radius: 99px; margin-bottom: 0.75rem;
+    }
+    .topic-hero .en-title { font-size: 0.95rem; color: var(--style-color); font-weight: 800; letter-spacing: 0.06em; direction: ltr; }
+    .topic-hero h1 { font-size: clamp(1.4rem, 4vw, 1.9rem); font-weight: 800; margin: 0.5rem 0; }
+    .topic-hero p { color: var(--muted); font-size: 0.95rem; max-width: 580px; margin: 0 auto; }
+    .self-ads-tag {
+      display: inline-block; margin-top: 1rem; font-size: 0.8rem; font-weight: 700;
+      background: var(--style-soft); color: var(--style-color); padding: 0.3rem 0.85rem; border-radius: 99px;
+    }
+    .intro-box {
+      background: var(--surface); border: 1px solid var(--border); border-radius: var(--radius);
+      padding: 1.25rem 1.5rem; margin-bottom: 1.75rem; box-shadow: var(--shadow);
+    }
+    .intro-box p { color: var(--muted); font-size: 0.92rem; }
+    .style-grid {
+      display: grid; grid-template-columns: repeat(auto-fill, minmax(260px, 1fr)); gap: 1rem;
+    }
+    .style-card {
+      background: var(--surface); border: 1px solid var(--border); border-radius: var(--radius-sm);
+      overflow: hidden; box-shadow: var(--shadow);
+      transition: border-color 0.2s, transform 0.2s;
+    }
+    .style-card:hover { border-color: var(--style-color); transform: translateY(-3px); box-shadow: var(--shadow-hover); }
+    .style-img {
+      width: 100%; aspect-ratio: 16/10; object-fit: cover; display: block;
+      border-bottom: 1px solid var(--border);
+    }
+    .style-body { padding: 1.15rem 1.25rem; }
+    .style-head { display: flex; flex-wrap: wrap; align-items: baseline; gap: 0.45rem; margin-bottom: 0.5rem; }
+    .style-head .en { font-size: 0.82rem; font-weight: 800; color: var(--style-color); direction: ltr; }
+    .style-head .ar { font-size: 1rem; font-weight: 700; }
+    .use-tags { display: flex; flex-wrap: wrap; gap: 0.3rem; margin-bottom: 0.6rem; }
+    .use-tag {
+      font-size: 0.7rem; font-weight: 600; background: var(--style-soft); color: #9d174d;
+      padding: 0.12rem 0.5rem; border-radius: 99px;
+    }
+    .style-body > p { font-size: 0.88rem; color: var(--muted); margin-bottom: 0.75rem; line-height: 1.65; }
+    .prompt-example {
+      background: var(--bg-soft); border: 1px solid var(--border); border-radius: 10px;
+      padding: 0.7rem 0.9rem; font-size: 0.8rem; direction: ltr; text-align: left;
+      font-family: "Courier New", Courier, monospace; color: #2d3748; line-height: 1.6;
+    }
+    a.pinterest-link {
+      color: inherit; text-decoration: none;
+      border-bottom: 1px dotted currentColor; transition: color 0.2s, border-color 0.2s;
+    }
+    a.pinterest-link:hover { color: var(--style-color); border-bottom-color: var(--style-color); }
+    .style-head a.pinterest-link { color: var(--style-color); }
+    .prompt-example a.pinterest-link { color: #2d3748; }
+    .intro-box a.pinterest-link { color: var(--style-color); font-style: italic; }
+    .prompt-label { font-size: 0.72rem; font-weight: 700; color: var(--success); margin-bottom: 0.3rem; }
+    .cross-nav { display: grid; grid-template-columns: repeat(3, 1fr); gap: 1rem; margin-top: 2rem; }
+    .cross-card {
+      background: var(--surface); border: 1px solid var(--border); border-radius: var(--radius-sm);
+      padding: 1.25rem; text-align: center; text-decoration: none; color: inherit;
+      transition: all 0.2s; box-shadow: var(--shadow);
+    }
+    .cross-card:hover { border-color: var(--style-color); transform: translateY(-3px); box-shadow: var(--shadow-hover); }
+    .cross-card span { font-size: 1.5rem; display: block; margin-bottom: 0.35rem; }
+    .cross-card strong { display: block; font-size: 0.95rem; margin-bottom: 0.25rem; }
+    .cross-card small { color: var(--muted); font-size: 0.8rem; }
+    .btn-primary {
+      display: inline-block; margin-top: 1.5rem; padding: 0.85rem 1.75rem;
+      background: linear-gradient(135deg, #be185d, #f472b6); color: #fff;
+      font-weight: 700; text-decoration: none; border-radius: 99px;
+      box-shadow: 0 8px 24px rgba(190,24,93,0.3); transition: transform 0.2s;
+    }
+    .btn-primary:hover { transform: translateY(-2px); }
+    .footer-cta { text-align: center; margin-top: 2rem; }
+    .footer-note { text-align: center; margin-top: 1.5rem; font-size: 0.85rem; color: var(--muted); }
+
+    /* Style quiz — simple */
+    .quiz-section {
+      background: linear-gradient(135deg, var(--surface), #fdf2f8);
+      border: 1px solid var(--border); border-radius: var(--radius);
+      padding: 1.5rem; margin-top: 2rem; margin-bottom: 2rem; box-shadow: var(--shadow);
+    }
+    .quiz-section .section-head {
+      font-size: 1.15rem; font-weight: 800; margin-bottom: 0.35rem;
+      display: flex; align-items: center; gap: 0.5rem;
+    }
+    .quiz-section .section-desc { color: var(--muted); font-size: 0.9rem; margin-bottom: 1.25rem; }
+    .quiz-progress {
+      text-align: center; font-size: 0.88rem; font-weight: 700; color: var(--style-color);
+      margin-bottom: 1rem;
+    }
+    .quiz-image-wrap {
+      border-radius: var(--radius-sm); border: 1px solid var(--border); overflow: hidden;
+      margin-bottom: 1.25rem; aspect-ratio: 16/10;
+    }
+    .quiz-image-wrap img { width: 100%; height: 100%; object-fit: cover; display: block; }
+    .quiz-prompt {
+      text-align: center; font-size: 1.05rem; font-weight: 800; margin-bottom: 1rem;
+    }
+    .quiz-options {
+      display: grid; grid-template-columns: repeat(2, 1fr); gap: 0.75rem; margin-bottom: 1rem;
+    }
+    .quiz-option {
+      font-family: inherit; font-size: 0.95rem; font-weight: 700;
+      padding: 1rem 0.5rem; border-radius: var(--radius-sm);
+      border: 2px solid var(--border); background: var(--surface);
+      color: var(--text); cursor: pointer; transition: all 0.2s;
+    }
+    .quiz-option:hover:not(:disabled) {
+      border-color: var(--style-color); background: var(--style-soft); transform: scale(1.03);
+    }
+    .quiz-option:disabled { cursor: default; }
+    .quiz-option.correct { border-color: var(--success); background: var(--success-soft); color: #065f46; }
+    .quiz-option.wrong { border-color: var(--danger); background: var(--danger-soft); color: #991b1b; }
+    .quiz-feedback {
+      text-align: center; font-size: 1rem; font-weight: 700;
+      min-height: 1.5rem; margin-bottom: 0.5rem;
+    }
+    .quiz-feedback.ok { color: var(--success); }
+    .quiz-feedback.no { color: var(--danger); }
+    .quiz-btn-restart {
+      display: block; margin: 1rem auto 0; font-family: inherit; font-size: 0.9rem; font-weight: 700;
+      padding: 0.7rem 1.5rem; border-radius: 99px; border: 2px solid var(--style-color);
+      background: var(--surface); color: var(--style-color); cursor: pointer;
+    }
+    .quiz-done { display: none; text-align: center; padding: 1rem 0; }
+    .quiz-done.show { display: block; }
+    .quiz-done .done-emoji { font-size: 2.5rem; }
+    .quiz-done h3 { font-size: 1.15rem; font-weight: 800; margin: 0.5rem 0; }
+    .quiz-active.hide { display: none; }
+
+    @media (max-width: 600px) { .cross-nav { grid-template-columns: 1fr; } }
+  </style>
+</head>
+<body>
+  <div class="page">
+    <nav class="top-nav">
+      <a href="index.html" class="back-link">← الدليل الرئيسي</a>
+      <div class="nav-links">
+        <a href="framing.html" class="nav-link">📷 Framing</a>
+        <a href="lighting.html" class="nav-link">💡 Lighting</a>
+        <a href="aspect.html" class="nav-link">📐 Aspect</a>
+        <a href="style.html" class="nav-link active">🎨 Style</a>
+        <a href="master-prompt.html" class="nav-link">👑 Master</a>
+        <a href="tool.html" class="nav-link">🛠️ الأداة</a>
+      </div>
+    </nav>
+
+    <header class="topic-hero">
+      <span class="topic-badge">S في SELF ADS</span>
+      <p class="en-title">STYLE</p>
+      <h1>الستايل — Style</h1>
+      <p>الستايل يُحدد هوية الصورة البصرية — واقعي، سينمائي، فني، أو تجاري. بدون تحديد الستايل، النتيجة تكون عامة ومش مميزة.</p>
+      <span class="self-ads-tag">Style = الأسلوب البصري + تقنية التصوير + إحساس الصورة النهائي</span>
+    </header>
+
+    <div class="intro-box">
+      <p><strong>ليه مهم؟</strong> نفس المشهد بنفس الإضاءة — <a href="https://www.pinterest.com/search/pins/?q=photorealistic" class="pinterest-link" target="_blank" rel="noopener noreferrer"><em>photorealistic</em></a> يُنتج صورة واقعية، و<a href="https://www.pinterest.com/search/pins/?q=anime%20style" class="pinterest-link" target="_blank" rel="noopener noreferrer"><em>anime style</em></a> يُنتج رسوماً يابانية. الستايل هو اللي يفرّق صورتك عن غيرها. <a href="#quiz" style="color:var(--style-color);font-weight:700;text-decoration:none;">جرّب التمرين ↓</a></p>
+    </div>
+
+    <div class="style-grid">
+      <article class="style-card">
+        <img class="style-img" src="assets/style-quiz/photorealistic.png" alt="Photorealistic" loading="lazy" />
+        <div class="style-body">
+          <div class="style-head"><a href="https://www.pinterest.com/search/pins/?q=photorealistic" class="pinterest-link en" target="_blank" rel="noopener noreferrer">PHOTOREALISTIC</a><span class="ar">واقعي فوتوغرافي</span></div>
+          <div class="use-tags"><span class="use-tag">تسويق</span><span class="use-tag">بورتريه</span><span class="use-tag">منتجات</span></div>
+          <p>صورة تبدو كأنها مُصوَّرة بكاميرا حقيقية. الأكثر استخداماً للمحتوى الاحترافي.</p>
+          <p class="prompt-label">مثال في البرومبت:</p>
+          <div class="prompt-example"><a href="https://www.pinterest.com/search/pins/?q=photorealistic" class="pinterest-link" target="_blank" rel="noopener noreferrer">photorealistic</a>, <a href="https://www.pinterest.com/search/pins/?q=shot%20on%20DSLR" class="pinterest-link" target="_blank" rel="noopener noreferrer">shot on DSLR</a>, <a href="https://www.pinterest.com/search/pins/?q=natural%20skin%20texture" class="pinterest-link" target="_blank" rel="noopener noreferrer">natural skin texture</a>, <a href="https://www.pinterest.com/search/pins/?q=lifelike%20details" class="pinterest-link" target="_blank" rel="noopener noreferrer">lifelike details</a></div>
+        </div>
+      </article>
+
+      <article class="style-card">
+        <img class="style-img" src="assets/style-quiz/commercial.png" alt="Commercial Photography" loading="lazy" />
+        <div class="style-body">
+          <div class="style-head"><a href="https://www.pinterest.com/search/pins/?q=commercial%20photography" class="pinterest-link en" target="_blank" rel="noopener noreferrer">COMMERCIAL PHOTOGRAPHY</a><span class="ar">تصوير تجاري</span></div>
+          <div class="use-tags"><span class="use-tag">إعلانات</span><span class="use-tag">براندات</span><span class="use-tag">كتالوج</span></div>
+          <p>أسلوب نظيف واحترافي زي إعلانات الماركات الكبيرة. إضاءة محسوبة وخلفية منظمة.</p>
+          <p class="prompt-label">مثال في البرومبت:</p>
+          <div class="prompt-example"><a href="https://www.pinterest.com/search/pins/?q=commercial%20photography" class="pinterest-link" target="_blank" rel="noopener noreferrer">commercial photography</a>, <a href="https://www.pinterest.com/search/pins/?q=clean%20studio%20look" class="pinterest-link" target="_blank" rel="noopener noreferrer">clean studio look</a>, <a href="https://www.pinterest.com/search/pins/?q=polished%20brand%20aesthetic" class="pinterest-link" target="_blank" rel="noopener noreferrer">polished brand aesthetic</a>, <a href="https://www.pinterest.com/search/pins/?q=ad%20campaign%20style" class="pinterest-link" target="_blank" rel="noopener noreferrer">ad campaign style</a></div>
+        </div>
+      </article>
+
+      <article class="style-card">
+        <img class="style-img" src="assets/style-quiz/cinematic.png" alt="Cinematic" loading="lazy" />
+        <div class="style-body">
+          <div class="style-head"><a href="https://www.pinterest.com/search/pins/?q=cinematic%20style" class="pinterest-link en" target="_blank" rel="noopener noreferrer">CINEMATIC</a><span class="ar">سينمائي</span></div>
+          <div class="use-tags"><span class="use-tag">أفلام</span><span class="use-tag">دراما</span><span class="use-tag">ستوريتلنق</span></div>
+          <p>إحساس مشهد فيلم — ألوان درامية، تباين عالي، وأجواء سردية قوية.</p>
+          <p class="prompt-label">مثال في البرومبت:</p>
+          <div class="prompt-example"><a href="https://www.pinterest.com/search/pins/?q=cinematic%20style" class="pinterest-link" target="_blank" rel="noopener noreferrer">cinematic style</a>, <a href="https://www.pinterest.com/search/pins/?q=movie%20still" class="pinterest-link" target="_blank" rel="noopener noreferrer">movie still</a>, <a href="https://www.pinterest.com/search/pins/?q=dramatic%20color%20grading" class="pinterest-link" target="_blank" rel="noopener noreferrer">dramatic color grading</a>, <a href="https://www.pinterest.com/search/pins/?q=widescreen%20atmosphere" class="pinterest-link" target="_blank" rel="noopener noreferrer">widescreen atmosphere</a></div>
+        </div>
+      </article>
+
+      <article class="style-card">
+        <img class="style-img" src="assets/style-quiz/ultra-realistic.png" alt="Ultra Realistic" loading="lazy" />
+        <div class="style-body">
+          <div class="style-head"><a href="https://www.pinterest.com/search/pins/?q=ultra%20realistic" class="pinterest-link en" target="_blank" rel="noopener noreferrer">ULTRA REALISTIC</a><span class="ar">واقعي للغاية</span></div>
+          <div class="use-tags"><span class="use-tag">تفاصيل عالية</span><span class="use-tag">ماكرو</span><span class="use-tag">منتجات فاخرة</span></div>
+          <p>واقعية فوق الطبيعي — كل تفصيلة واضحة: ملمس، انعكاس، وظل. مثالي مع كلمات التوابل.</p>
+          <p class="prompt-label">مثال في البرومبت:</p>
+          <div class="prompt-example"><a href="https://www.pinterest.com/search/pins/?q=ultra%20realistic" class="pinterest-link" target="_blank" rel="noopener noreferrer">ultra realistic</a>, <a href="https://www.pinterest.com/search/pins/?q=hyper-detailed" class="pinterest-link" target="_blank" rel="noopener noreferrer">hyper-detailed</a>, <a href="https://www.pinterest.com/search/pins/?q=8k%20quality" class="pinterest-link" target="_blank" rel="noopener noreferrer">8k quality</a>, <a href="https://www.pinterest.com/search/pins/?q=sharp%20textures%20and%20reflections" class="pinterest-link" target="_blank" rel="noopener noreferrer">sharp textures and reflections</a></div>
+        </div>
+      </article>
+
+      <article class="style-card">
+        <img class="style-img" src="assets/style-quiz/anime.png" alt="Anime Style" loading="lazy" />
+        <div class="style-body">
+          <div class="style-head"><a href="https://www.pinterest.com/search/pins/?q=anime%20style" class="pinterest-link en" target="_blank" rel="noopener noreferrer">ANIME STYLE</a><span class="ar">أنمي</span></div>
+          <div class="use-tags"><span class="use-tag">شخصيات</span><span class="use-tag">فانتازيا</span><span class="use-tag">محتوى ياباني</span></div>
+          <p>أسلوب الرسوم اليابانية — خطوط واضحة، ألوان زاهية، وتعبيرات مبالَغ فيها.</p>
+          <p class="prompt-label">مثال في البرومبت:</p>
+          <div class="prompt-example"><a href="https://www.pinterest.com/search/pins/?q=anime%20style" class="pinterest-link" target="_blank" rel="noopener noreferrer">anime style</a>, <a href="https://www.pinterest.com/search/pins/?q=vibrant%20colors" class="pinterest-link" target="_blank" rel="noopener noreferrer">vibrant colors</a>, <a href="https://www.pinterest.com/search/pins/?q=clean%20line%20art" class="pinterest-link" target="_blank" rel="noopener noreferrer">clean line art</a>, <a href="https://www.pinterest.com/search/pins/?q=Studio%20Ghibli%20inspired%20aesthetic" class="pinterest-link" target="_blank" rel="noopener noreferrer">Studio Ghibli inspired aesthetic</a></div>
+        </div>
+      </article>
+
+      <article class="style-card">
+        <img class="style-img" src="assets/style-quiz/oil-painting.png" alt="Oil Painting" loading="lazy" />
+        <div class="style-body">
+          <div class="style-head"><a href="https://www.pinterest.com/search/pins/?q=oil%20painting%20style" class="pinterest-link en" target="_blank" rel="noopener noreferrer">OIL PAINTING</a><span class="ar">رسم زيتي</span></div>
+          <div class="use-tags"><span class="use-tag">فني</span><span class="use-tag">كلاسيكي</span><span class="use-tag">معارض</span></div>
+          <p>إحساس لوحة فنية مرسومة بالزيت — ضربات فرشاة، ألوان غنية، وملمس فني.</p>
+          <p class="prompt-label">مثال في البرومبت:</p>
+          <div class="prompt-example"><a href="https://www.pinterest.com/search/pins/?q=oil%20painting%20style" class="pinterest-link" target="_blank" rel="noopener noreferrer">oil painting style</a>, <a href="https://www.pinterest.com/search/pins/?q=visible%20brushstrokes" class="pinterest-link" target="_blank" rel="noopener noreferrer">visible brushstrokes</a>, <a href="https://www.pinterest.com/search/pins/?q=rich%20colors" class="pinterest-link" target="_blank" rel="noopener noreferrer">rich colors</a>, <a href="https://www.pinterest.com/search/pins/?q=fine%20art%20portrait" class="pinterest-link" target="_blank" rel="noopener noreferrer">fine art portrait</a></div>
+        </div>
+      </article>
+
+      <article class="style-card">
+        <img class="style-img" src="assets/style-quiz/3d-render.png" alt="3D Render" loading="lazy" />
+        <div class="style-body">
+          <div class="style-head"><a href="https://www.pinterest.com/search/pins/?q=3D%20render" class="pinterest-link en" target="_blank" rel="noopener noreferrer">3D RENDER</a><span class="ar">تصيير 3D</span></div>
+          <div class="use-tags"><span class="use-tag">تقني</span><span class="use-tag">منتجات</span><span class="use-tag">عمارة</span></div>
+          <p>مظهر مُصمَّم رقمياً بتقنية 3D — أسطح ناعمة، إضاءة محسوبة، ومظهر عصري.</p>
+          <p class="prompt-label">مثال في البرومبت:</p>
+          <div class="prompt-example"><a href="https://www.pinterest.com/search/pins/?q=3D%20render" class="pinterest-link" target="_blank" rel="noopener noreferrer">3D render</a>, <a href="https://www.pinterest.com/search/pins/?q=octane%20render" class="pinterest-link" target="_blank" rel="noopener noreferrer">octane render</a>, <a href="https://www.pinterest.com/search/pins/?q=smooth%20surfaces" class="pinterest-link" target="_blank" rel="noopener noreferrer">smooth surfaces</a>, <a href="https://www.pinterest.com/search/pins/?q=modern%20digital%20aesthetic" class="pinterest-link" target="_blank" rel="noopener noreferrer">modern digital aesthetic</a></div>
+        </div>
+      </article>
+
+      <article class="style-card">
+        <img class="style-img" src="assets/style-quiz/minimalist.png" alt="Minimalist" loading="lazy" />
+        <div class="style-body">
+          <div class="style-head"><a href="https://www.pinterest.com/search/pins/?q=minimalist%20style" class="pinterest-link en" target="_blank" rel="noopener noreferrer">MINIMALIST</a><span class="ar">بسيط Minimal</span></div>
+          <div class="use-tags"><span class="use-tag">براندات</span><span class="use-tag">تصميم</span><span class="use-tag">Apple-like</span></div>
+          <p>بساطة ونظافة — عناصر قليلة، مساحات فارغة، وألوان هادئة. أقل هو أكثر.</p>
+          <p class="prompt-label">مثال في البرومبت:</p>
+          <div class="prompt-example"><a href="https://www.pinterest.com/search/pins/?q=minimalist%20style" class="pinterest-link" target="_blank" rel="noopener noreferrer">minimalist style</a>, <a href="https://www.pinterest.com/search/pins/?q=clean%20white%20background" class="pinterest-link" target="_blank" rel="noopener noreferrer">clean white background</a>, <a href="https://www.pinterest.com/search/pins/?q=simple%20composition" class="pinterest-link" target="_blank" rel="noopener noreferrer">simple composition</a>, <a href="https://www.pinterest.com/search/pins/?q=negative%20space" class="pinterest-link" target="_blank" rel="noopener noreferrer">negative space</a></div>
+        </div>
+      </article>
+    </div>
+
+    <section class="quiz-section" id="quiz" aria-label="تمرين الستايل">
+      <h2 class="section-head"><span>🎯</span> تمرين سريع — خمّن الستايل</h2>
+      <p class="section-desc">٤ صور بس — اختار الستايل. اضغط واعرف النتيجة فوراً.</p>
+
+      <div class="quiz-active" id="quizActive">
+        <p class="quiz-progress" id="quizProgress">١ / ٤</p>
+        <div class="quiz-image-wrap">
+          <img id="quizImage" src="" alt="صورة للتخمين" loading="lazy" />
+        </div>
+        <p class="quiz-prompt">الستايل ده…</p>
+        <div class="quiz-options" id="quizOptions">
+          <button type="button" class="quiz-option" data-answer="photo">📸 واقعي</button>
+          <button type="button" class="quiz-option" data-answer="cinematic">🎬 سينمائي</button>
+          <button type="button" class="quiz-option" data-answer="anime">🎌 أنمي</button>
+          <button type="button" class="quiz-option" data-answer="art">🖼️ فني</button>
+        </div>
+        <p class="quiz-feedback" id="quizFeedback" aria-live="polite"></p>
+      </div>
+
+      <div class="quiz-done" id="quizDone">
+        <div class="done-emoji">🎉</div>
+        <h3 id="doneTitle">أحسنت!</h3>
+        <button type="button" class="quiz-btn-restart" id="quizRestart">🔄 كرّر التمرين</button>
+      </div>
+    </section>
+
+    <div class="cross-nav">
+      <a href="aspect.html" class="cross-card"><span>📐</span><strong>الأبعاد — Aspect Ratio</strong><small>القسم السابق: A</small></a>
+      <a href="index.html" class="cross-card"><span>🏠</span><strong>الدليل الرئيسي</strong><small>SELF ADS كامل</small></a>
+      <a href="tool.html" class="cross-card"><span>🛠️</span><strong>الأداة التفاعلية</strong><small>جرّب الستايلات</small></a>
+    </div>
+
+    <div class="footer-cta">
+      <a href="tool.html" class="btn-primary">🛠️ جرّب الستايلات في الأداة</a>
+    </div>
+    <p class="footer-note"><a href="index.html" style="color:var(--style-color);text-decoration:none;">← العودة للصفحة الرئيسية</a></p>
+  </div>
+
+  <script>
+    const CHOICES = {
+      photo: "واقعي",
+      cinematic: "سينمائي",
+      anime: "أنمي",
+      art: "فني"
+    };
+
+    const SIMPLE_QUIZ = [
+      { image: "assets/style-quiz/photorealistic.png", answer: "photo" },
+      { image: "assets/style-quiz/cinematic.png", answer: "cinematic" },
+      { image: "assets/style-quiz/anime.png", answer: "anime" },
+      { image: "assets/style-quiz/oil-painting.png", answer: "art" }
+    ];
+
+    let quizIndex = 0;
+    let quizScore = 0;
+    let locked = false;
+
+    const quizImage = document.getElementById("quizImage");
+    const quizProgress = document.getElementById("quizProgress");
+    const quizFeedback = document.getElementById("quizFeedback");
+    const quizActive = document.getElementById("quizActive");
+    const quizDone = document.getElementById("quizDone");
+    const optionBtns = document.querySelectorAll(".quiz-option");
+
+    function toArabicNum(n) {
+      return String(n).replace(/\d/g, d => "٠١٢٣٤٥٦٧٨٩"[d]);
+    }
+
+    function showQuestion() {
+      locked = false;
+      quizFeedback.textContent = "";
+      quizFeedback.className = "quiz-feedback";
+
+      const q = SIMPLE_QUIZ[quizIndex];
+      quizImage.src = q.image;
+      quizProgress.textContent = `${toArabicNum(quizIndex + 1)} / ${toArabicNum(SIMPLE_QUIZ.length)}`;
+
+      optionBtns.forEach(btn => {
+        btn.disabled = false;
+        btn.className = "quiz-option";
+      });
+    }
+
+    function pickAnswer(choice) {
+      if (locked) return;
+      locked = true;
+
+      const q = SIMPLE_QUIZ[quizIndex];
+      const isRight = choice === q.answer;
+      if (isRight) quizScore++;
+
+      optionBtns.forEach(btn => {
+        btn.disabled = true;
+        if (btn.dataset.answer === q.answer) btn.classList.add("correct");
+        else if (btn.dataset.answer === choice && !isRight) btn.classList.add("wrong");
+      });
+
+      quizFeedback.className = `quiz-feedback ${isRight ? "ok" : "no"}`;
+      quizFeedback.textContent = isRight
+        ? "✅ صح!"
+        : `❌ الإجابة: ${CHOICES[q.answer]}`;
+
+      setTimeout(() => {
+        if (quizIndex < SIMPLE_QUIZ.length - 1) {
+          quizIndex++;
+          showQuestion();
+        } else {
+          finishQuiz();
+        }
+      }, 1400);
+    }
+
+    function finishQuiz() {
+      quizActive.classList.add("hide");
+      quizDone.classList.add("show");
+      document.getElementById("doneTitle").textContent =
+        quizScore === SIMPLE_QUIZ.length ? "ممتاز! 🏆" :
+        quizScore >= 3 ? "أحسنت! 👏" : "حاول تاني — بسيطة!";
+    }
+
+    function startQuiz() {
+      quizIndex = 0;
+      quizScore = 0;
+      quizActive.classList.remove("hide");
+      quizDone.classList.remove("show");
+      showQuestion();
+    }
+
+    optionBtns.forEach(btn => {
+      btn.addEventListener("click", () => pickAnswer(btn.dataset.answer));
+    });
+    document.getElementById("quizRestart").addEventListener("click", startQuiz);
+
+    startQuiz();
+  </script>
+</body>
+</html>

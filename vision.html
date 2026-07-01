@@ -1,0 +1,457 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>صورة → Master Prompt | OpenAI | SELF ADS</title>
+  <style>
+    :root {
+      --bg: #f4f6fb; --surface: #fff; --text: #1a2233; --muted: #5c667a; --border: #dde3ef;
+      --accent: #4f6ef7; --accent-soft: #e8edff; --accent-2: #7c5cbf;
+      --gem: #10a37f; --gem-soft: #e6f7f1;
+      --success: #0d9f6e; --success-soft: #e6f7f1;
+      --danger: #dc4c4c; --danger-soft: #fdecec;
+      --radius: 18px; --radius-sm: 12px;
+      --shadow: 0 8px 32px rgba(26,34,51,0.08);
+    }
+    * { box-sizing: border-box; margin: 0; padding: 0; }
+    body {
+      font-family: "Segoe UI", Tahoma, Arial, sans-serif;
+      background: var(--bg); color: var(--text); line-height: 1.8; min-height: 100vh;
+    }
+    body::before {
+      content: ""; position: fixed; inset: 0;
+      background: radial-gradient(ellipse 60% 50% at 15% 0%, rgba(16,163,127,0.1), transparent),
+                  radial-gradient(ellipse 50% 40% at 85% 5%, rgba(79,110,247,0.08), transparent);
+      pointer-events: none; z-index: 0;
+    }
+    .page { position: relative; z-index: 1; max-width: 900px; margin: 0 auto; padding: 1.25rem 1.25rem 3rem; }
+    .top-nav {
+      display: flex; flex-wrap: wrap; align-items: center; justify-content: space-between;
+      gap: 0.75rem; margin-bottom: 1.5rem; padding-bottom: 1rem; border-bottom: 1px solid var(--border);
+    }
+    .back-link, .nav-link {
+      font-size: 0.82rem; font-weight: 600; text-decoration: none; color: var(--muted);
+      padding: 0.35rem 0.65rem; border-radius: 99px; transition: all 0.2s;
+    }
+    .back-link:hover, .nav-link:hover { color: var(--gem); background: var(--gem-soft); }
+    .nav-links { display: flex; flex-wrap: wrap; gap: 0.25rem; }
+    .nav-link.active { color: var(--gem); background: var(--gem-soft); border: 1px solid #93c5fd; }
+    .hero {
+      text-align: center; background: linear-gradient(135deg, var(--surface), var(--gem-soft));
+      border: 1px solid var(--border); border-radius: var(--radius); padding: 2rem 1.5rem;
+      margin-bottom: 1.5rem; box-shadow: var(--shadow);
+    }
+    .hero-badge {
+      display: inline-block; background: linear-gradient(135deg, #10a37f, #1a7f64);
+      color: #fff; font-size: 0.78rem; font-weight: 700; padding: 0.3rem 0.85rem;
+      border-radius: 99px; margin-bottom: 0.75rem;
+    }
+    .hero h1 { font-size: clamp(1.35rem, 4vw, 1.85rem); font-weight: 800; margin-bottom: 0.5rem; }
+    .hero p { color: var(--muted); font-size: 0.92rem; max-width: 580px; margin: 0 auto; }
+    .hero-tag {
+      display: inline-block; margin-top: 0.85rem; font-size: 0.78rem; font-weight: 700;
+      background: var(--gem-soft); color: var(--gem); padding: 0.3rem 0.8rem; border-radius: 99px;
+    }
+    .server-note {
+      background: #fffbeb; border: 1px solid #fcd34d; border-radius: var(--radius-sm);
+      padding: 0.85rem 1rem; font-size: 0.82rem; color: #92400e; margin-bottom: 1.25rem;
+      display: none;
+    }
+    .server-note.show { display: block; }
+    .server-note code { background: #fef3c7; padding: 0.1rem 0.4rem; border-radius: 4px; direction: ltr; font-size: 0.78rem; }
+    .upload-panel {
+      background: var(--surface); border: 1px solid var(--border); border-radius: var(--radius);
+      padding: 1.35rem; box-shadow: var(--shadow); margin-bottom: 1.5rem;
+    }
+    .drop-zone {
+      border: 2px dashed var(--border); border-radius: var(--radius-sm);
+      padding: 2rem 1rem; text-align: center; cursor: pointer;
+      transition: border-color 0.2s, background 0.2s; margin-bottom: 1rem;
+    }
+    .drop-zone:hover, .drop-zone.dragover {
+      border-color: var(--gem); background: var(--gem-soft);
+    }
+    .drop-zone.has-image { padding: 0; border-style: solid; overflow: hidden; }
+    .drop-zone .dz-icon { font-size: 2.5rem; margin-bottom: 0.5rem; }
+    .drop-zone p { font-size: 0.9rem; color: var(--muted); }
+    .drop-zone small { font-size: 0.78rem; color: var(--muted); }
+    .preview-img {
+      width: 100%; max-height: 360px; object-fit: contain; display: block;
+      background: #0f1419;
+    }
+    .preview-bar {
+      display: flex; flex-wrap: wrap; align-items: center; justify-content: space-between;
+      gap: 0.5rem; padding: 0.65rem 0.85rem; background: var(--bg);
+      border-top: 1px solid var(--border); font-size: 0.8rem; color: var(--muted);
+    }
+    .file-input { display: none; }
+    .upload-actions { display: flex; flex-wrap: wrap; gap: 0.6rem; }
+    .btn-primary {
+      font-family: inherit; font-size: 0.95rem; font-weight: 700; padding: 0.75rem 1.5rem;
+      border: none; border-radius: 99px; cursor: pointer; color: #fff;
+      background: linear-gradient(135deg, #10a37f, #1a7f64);
+      box-shadow: 0 6px 20px rgba(16,163,127,0.35); transition: transform 0.2s, opacity 0.2s;
+    }
+    .btn-primary:hover:not(:disabled) { transform: translateY(-2px); }
+    .btn-primary:disabled { opacity: 0.5; cursor: not-allowed; transform: none; }
+    .btn-secondary {
+      font-family: inherit; font-size: 0.85rem; font-weight: 600; padding: 0.65rem 1.1rem;
+      border: 2px solid var(--border); border-radius: 99px; background: var(--surface);
+      color: var(--muted); cursor: pointer;
+    }
+    .loading { display: none; text-align: center; padding: 2rem; color: var(--muted); }
+    .loading.show { display: block; }
+    .spinner {
+      width: 36px; height: 36px; border: 3px solid var(--border);
+      border-top-color: var(--gem); border-radius: 50%;
+      animation: spin 0.8s linear infinite; margin: 0 auto 0.75rem;
+    }
+    @keyframes spin { to { transform: rotate(360deg); } }
+    .error-box {
+      display: none; background: var(--danger-soft); border: 1px solid #fca5a5;
+      border-radius: var(--radius-sm); padding: 1rem; color: #991b1b;
+      font-size: 0.9rem; margin-bottom: 1.25rem;
+    }
+    .error-box.show { display: block; }
+    .results { display: none; }
+    .results.show { display: block; }
+    .summary-card {
+      background: linear-gradient(135deg, var(--surface), var(--gem-soft));
+      border: 2px solid #93c5fd; border-radius: var(--radius);
+      padding: 1.35rem; margin-bottom: 1.5rem; box-shadow: var(--shadow);
+    }
+    .summary-card h2 { font-size: 1rem; font-weight: 800; margin-bottom: 0.5rem; color: var(--gem); }
+    .summary-card p { font-size: 0.9rem; color: var(--muted); }
+    .principles-grid { display: flex; flex-direction: column; gap: 0.75rem; margin-bottom: 1.5rem; }
+    .p-card {
+      background: var(--surface); border: 1px solid var(--border); border-radius: var(--radius-sm);
+      padding: 1rem 1.15rem; box-shadow: var(--shadow);
+    }
+    .p-top { display: flex; align-items: center; gap: 0.6rem; margin-bottom: 0.5rem; }
+    .p-letter {
+      width: 36px; height: 36px; border-radius: 10px; color: #fff; font-weight: 800;
+      display: grid; place-items: center; flex-shrink: 0;
+    }
+    .p-letter[data-key="subject"] { background: linear-gradient(135deg, #4f6ef7, #6b8cff); }
+    .p-letter[data-key="environment"] { background: linear-gradient(135deg, #0d9f6e, #34c38f); }
+    .p-letter[data-key="lighting"] { background: linear-gradient(135deg, #d97706, #f59e0b); }
+    .p-letter[data-key="framing"] { background: linear-gradient(135deg, #7c5cbf, #a78bfa); }
+    .p-letter[data-key="aspect"] { background: linear-gradient(135deg, #dc4c4c, #f87171); }
+    .p-letter[data-key="details"] { background: linear-gradient(135deg, #0891b2, #22d3ee); }
+    .p-letter[data-key="style"] { background: linear-gradient(135deg, #be185d, #f472b6); }
+    .p-title { font-weight: 800; font-size: 0.92rem; }
+    .p-detected { font-size: 0.85rem; color: var(--muted); margin-bottom: 0.35rem; }
+    .p-phrase {
+      font-size: 0.78rem; background: var(--bg); border-radius: 8px; padding: 0.5rem 0.65rem;
+      direction: ltr; text-align: left; color: #2d3748;
+      font-family: "Courier New", Courier, monospace;
+    }
+    .master-panel {
+      background: var(--surface); border: 2px solid var(--gem); border-radius: var(--radius);
+      padding: 1.35rem; box-shadow: var(--shadow); margin-bottom: 1.25rem;
+    }
+    .master-panel h2 { font-size: 1.05rem; font-weight: 800; margin-bottom: 0.75rem; }
+    .master-text {
+      background: #1a2233; color: #e8edf5; border-radius: var(--radius-sm);
+      padding: 1.1rem; font-size: 0.8rem; line-height: 1.8;
+      font-family: "Courier New", Courier, monospace; direction: ltr; text-align: left;
+      white-space: pre-wrap; word-break: break-word; margin-bottom: 0.85rem;
+    }
+    .spice-row { display: flex; flex-wrap: wrap; gap: 0.35rem; margin-bottom: 0.85rem; }
+    .spice-tag {
+      font-size: 0.72rem; font-weight: 700; background: #fef3e2; color: #d97706;
+      padding: 0.2rem 0.55rem; border-radius: 99px; direction: ltr;
+    }
+    .tips-list {
+      background: var(--accent-soft); border-radius: var(--radius-sm); padding: 1rem 1.25rem;
+      margin-bottom: 1.25rem;
+    }
+    .tips-list h3 { font-size: 0.9rem; font-weight: 800; margin-bottom: 0.5rem; }
+    .tips-list li { font-size: 0.85rem; color: var(--muted); }
+    .btn-copy {
+      font-family: inherit; font-size: 0.85rem; font-weight: 700; padding: 0.55rem 1.1rem;
+      border: none; border-radius: 99px; background: var(--gem); color: #fff; cursor: pointer;
+    }
+    .toast {
+      position: fixed; bottom: 1.5rem; left: 50%; transform: translateX(-50%) translateY(80px);
+      background: #1a2233; color: #fff; padding: 0.65rem 1.25rem; border-radius: 99px;
+      font-size: 0.85rem; font-weight: 600; opacity: 0; transition: all 0.3s; z-index: 100;
+    }
+    .toast.show { opacity: 1; transform: translateX(-50%) translateY(0); }
+    .footer-note { text-align: center; font-size: 0.85rem; color: var(--muted); margin-top: 1.5rem; }
+    .footer-note a { color: var(--accent); text-decoration: none; font-weight: 600; }
+  </style>
+</head>
+<body>
+  <div class="page">
+    <nav class="top-nav">
+      <a href="index.html" class="back-link">← الدليل الرئيسي</a>
+      <div class="nav-links">
+        <a href="tool.html" class="nav-link">🛠️ بناء البرومبت</a>
+        <a href="analyzer.html" class="nav-link">🤖 DeepSeek</a>
+        <a href="vision.html" class="nav-link active">🖼️ صورة → برومبت</a>
+      </div>
+    </nav>
+
+    <header class="hero">
+      <span class="hero-badge">✨ OpenAI Vision (GPT-4o)</span>
+      <h1>من صورة → Master Prompt</h1>
+      <p>ارفع صورة مرجعية — OpenAI يحلّلها حسب <strong>SELF ADS</strong> ويولّد برومبت جاهز لإنتاج صورة مشابهة.</p>
+      <span class="hero-tag">تحليل بصري · قالب Master Prompt · كلمات توابل</span>
+    </header>
+
+    <div class="server-note" id="serverNote">
+      ⚠️ شغّل السيرفر أولاً: <code>npm start</code> ثم افتح
+      <code>http://localhost:3000/vision.html</code>
+      — وأضف <code>OPENAI_API_KEY</code> في ملف <code>.env</code>
+    </div>
+
+    <div class="upload-panel">
+      <div class="drop-zone" id="dropZone">
+        <div class="dz-placeholder" id="dzPlaceholder">
+          <div class="dz-icon">🖼️</div>
+          <p>اسحب صورة هنا أو اضغط للاختيار</p>
+          <small>JPG · PNG · WebP — حد أقصى ١٠ ميجا</small>
+        </div>
+        <img class="preview-img" id="previewImg" alt="معاينة" style="display:none" />
+        <div class="preview-bar" id="previewBar" style="display:none">
+          <span id="fileName">—</span>
+          <button type="button" class="btn-secondary" id="removeBtn" style="padding:0.3rem 0.7rem;font-size:0.75rem;">✕ إزالة</button>
+        </div>
+      </div>
+      <input type="file" id="fileInput" class="file-input" accept="image/jpeg,image/png,image/webp,image/gif" />
+      <div class="upload-actions">
+        <button type="button" class="btn-primary" id="analyzeBtn" disabled>🔍 حلّل الصورة وولّد البرومبت</button>
+        <button type="button" class="btn-secondary" id="pickBtn">اختر صورة</button>
+      </div>
+    </div>
+
+    <div class="error-box" id="errorBox"></div>
+
+    <div class="loading" id="loading">
+      <div class="spinner"></div>
+      <p>OpenAI بيحلّل الصورة ويبني Master Prompt…</p>
+    </div>
+
+    <div class="results" id="results">
+      <div class="summary-card" id="summaryCard"></div>
+      <div class="principles-grid" id="principlesGrid"></div>
+      <div class="master-panel">
+        <h2>✨ Master Prompt — جاهز للنسخ</h2>
+        <div class="spice-row" id="spiceRow"></div>
+        <div class="master-text" id="masterText"></div>
+        <button type="button" class="btn-copy" id="copyBtn">📋 نسخ Master Prompt</button>
+      </div>
+      <div class="tips-list" id="tipsList" style="display:none">
+        <h3>💡 نصائح لأفضل نتيجة</h3>
+        <ul id="tipsUl"></ul>
+      </div>
+    </div>
+
+    <p class="footer-note">
+      <a href="master-prompt.html">شرح Master Prompt</a> ·
+      <a href="analyzer.html">محلّل DeepSeek</a> ·
+      <a href="tool.html">أداة البناء</a>
+    </p>
+  </div>
+
+  <div class="toast" id="toast">تم النسخ ✓</div>
+
+  <script>
+    const PRINCIPLE_ORDER = [
+      { key: "subject", letter: "S", title: "Subject — الموضوع" },
+      { key: "environment", letter: "E", title: "Environment — البيئة" },
+      { key: "lighting", letter: "L", title: "Lighting — الإضاءة" },
+      { key: "framing", letter: "F", title: "Framing — التأطير" },
+      { key: "aspect", letter: "A", title: "Aspect Ratio — الأبعاد" },
+      { key: "details", letter: "D", title: "Details — التفاصيل" },
+      { key: "style", letter: "S", title: "Style — الستايل" }
+    ];
+
+    const MAX_SIZE = 10 * 1024 * 1024;
+    let imageBase64 = null;
+    let imageMime = null;
+    let fileName = "";
+
+    const dropZone = document.getElementById("dropZone");
+    const fileInput = document.getElementById("fileInput");
+    const previewImg = document.getElementById("previewImg");
+    const dzPlaceholder = document.getElementById("dzPlaceholder");
+    const previewBar = document.getElementById("previewBar");
+    const analyzeBtn = document.getElementById("analyzeBtn");
+    const errorBox = document.getElementById("errorBox");
+
+    function showError(msg) {
+      errorBox.textContent = msg;
+      errorBox.classList.add("show");
+    }
+    function hideError() { errorBox.classList.remove("show"); }
+
+    function setImage(file) {
+      if (!file.type.startsWith("image/")) {
+        showError("الملف مش صورة.");
+        return;
+      }
+      if (file.size > MAX_SIZE) {
+        showError("الصورة أكبر من ١٠ ميجا.");
+        return;
+      }
+      hideError();
+      const reader = new FileReader();
+      reader.onload = (e) => {
+        const dataUrl = e.target.result;
+        const base64 = dataUrl.split(",")[1];
+        imageBase64 = base64;
+        imageMime = file.type;
+        fileName = file.name;
+        previewImg.src = dataUrl;
+        previewImg.style.display = "block";
+        dzPlaceholder.style.display = "none";
+        previewBar.style.display = "flex";
+        document.getElementById("fileName").textContent = fileName;
+        dropZone.classList.add("has-image");
+        analyzeBtn.disabled = false;
+      };
+      reader.readAsDataURL(file);
+    }
+
+    function clearImage() {
+      imageBase64 = null;
+      imageMime = null;
+      fileName = "";
+      previewImg.style.display = "none";
+      previewImg.src = "";
+      dzPlaceholder.style.display = "block";
+      previewBar.style.display = "none";
+      dropZone.classList.remove("has-image");
+      analyzeBtn.disabled = true;
+      fileInput.value = "";
+      document.getElementById("results").classList.remove("show");
+    }
+
+    function renderResults(data) {
+      document.getElementById("summaryCard").innerHTML = `
+        <h2>🔍 تحليل الصورة</h2>
+        <p>${data.summary_ar || ""}</p>
+      `;
+
+      const byKey = {};
+      (data.principles || []).forEach(p => { byKey[p.key] = p; });
+
+      const grid = document.getElementById("principlesGrid");
+      grid.innerHTML = "";
+      PRINCIPLE_ORDER.forEach(meta => {
+        const p = byKey[meta.key] || { detected_ar: "—", prompt_phrase_en: "—" };
+        const card = document.createElement("article");
+        card.className = "p-card";
+        card.innerHTML = `
+          <div class="p-top">
+            <div class="p-letter" data-key="${meta.key}">${meta.letter}</div>
+            <span class="p-title">${p.title_ar || meta.title}</span>
+          </div>
+          <p class="p-detected"><strong>في الصورة:</strong> ${p.detected_ar || "—"}</p>
+          <div class="p-phrase">${p.prompt_phrase_en || "—"}</div>
+        `;
+        grid.appendChild(card);
+      });
+
+      document.getElementById("masterText").textContent = data.master_prompt || "—";
+
+      const spiceRow = document.getElementById("spiceRow");
+      spiceRow.innerHTML = "";
+      (data.spice_keywords || []).forEach(kw => {
+        const tag = document.createElement("span");
+        tag.className = "spice-tag";
+        tag.textContent = kw;
+        spiceRow.appendChild(tag);
+      });
+
+      const tips = data.tips_ar || [];
+      const tipsList = document.getElementById("tipsList");
+      if (tips.length) {
+        document.getElementById("tipsUl").innerHTML = tips.map(t => `<li>${t}</li>`).join("");
+        tipsList.style.display = "block";
+      } else {
+        tipsList.style.display = "none";
+      }
+
+      document.getElementById("results").classList.add("show");
+      document.getElementById("results").scrollIntoView({ behavior: "smooth", block: "start" });
+    }
+
+    async function analyze() {
+      if (!imageBase64) return;
+      hideError();
+      document.getElementById("results").classList.remove("show");
+      document.getElementById("loading").classList.add("show");
+      analyzeBtn.disabled = true;
+
+      try {
+        const res = await fetch("/api/image-to-prompt", {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify({ image: imageBase64, mimeType: imageMime })
+        });
+        const data = await res.json();
+        if (!res.ok) throw new Error(data.error || "فشل التحليل");
+        renderResults(data);
+      } catch (err) {
+        if (location.protocol === "file:") {
+          document.getElementById("serverNote").classList.add("show");
+          showError("افتح الصفحة عبر السيرفر المحلي.");
+        } else {
+          showError(err.message);
+        }
+      } finally {
+        document.getElementById("loading").classList.remove("show");
+        analyzeBtn.disabled = !imageBase64;
+      }
+    }
+
+    dropZone.addEventListener("click", (e) => {
+      if (e.target.closest("#removeBtn")) return;
+      if (!imageBase64) fileInput.click();
+    });
+    document.getElementById("pickBtn").addEventListener("click", () => fileInput.click());
+    fileInput.addEventListener("change", () => {
+      if (fileInput.files[0]) setImage(fileInput.files[0]);
+    });
+    document.getElementById("removeBtn").addEventListener("click", (e) => {
+      e.stopPropagation();
+      clearImage();
+    });
+
+    dropZone.addEventListener("dragover", (e) => {
+      e.preventDefault();
+      dropZone.classList.add("dragover");
+    });
+    dropZone.addEventListener("dragleave", () => dropZone.classList.remove("dragover"));
+    dropZone.addEventListener("drop", (e) => {
+      e.preventDefault();
+      dropZone.classList.remove("dragover");
+      if (e.dataTransfer.files[0]) setImage(e.dataTransfer.files[0]);
+    });
+
+    analyzeBtn.addEventListener("click", analyze);
+
+    document.getElementById("copyBtn").addEventListener("click", async () => {
+      const text = document.getElementById("masterText").textContent;
+      try { await navigator.clipboard.writeText(text); } catch {
+        const ta = document.createElement("textarea");
+        ta.value = text;
+        document.body.appendChild(ta);
+        ta.select();
+        document.execCommand("copy");
+        document.body.removeChild(ta);
+      }
+      document.getElementById("toast").classList.add("show");
+      setTimeout(() => document.getElementById("toast").classList.remove("show"), 2000);
+    });
+
+    if (location.protocol === "file:") {
+      document.getElementById("serverNote").classList.add("show");
+    }
+  </script>
+</body>
+</html>
