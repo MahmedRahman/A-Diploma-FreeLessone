@@ -179,6 +179,116 @@ app.post("/api/analyze", async (req, res) => {
   }
 });
 
+const PINTEREST_SYSTEM_PROMPT = `You are a visual research coach for AI image creators (Arabic educational course: SELF ADS).
+
+The user describes their work field, project idea, or creative direction.
+Suggest Pinterest search keywords for visual mood boarding and inspiration before writing AI image prompts.
+
+Rules:
+- Keywords must work well on Pinterest (visual, specific, searchable in English)
+- Provide 5-7 keyword groups with 4-6 keywords each
+- Mix broad and niche terms
+- Include 4-6 "combo searches" (2-4 words that work together on Pinterest)
+- Relate suggestions to SELF ADS when possible (subject, environment, lighting, framing, style, details)
+- Avoid generic useless terms like "beautiful", "nice", "cool"
+- pinterest_query should be the best English search phrase for Pinterest (can differ slightly from term_en)
+
+Respond ONLY with valid JSON:
+{
+  "summary_ar": "2-3 sentences explaining the visual direction in Arabic",
+  "mood_ar": "the intended mood/feeling in Arabic",
+  "keyword_groups": [
+    {
+      "title_ar": "Arabic group name e.g. الإضاءة",
+      "self_ads_key": "lighting|environment|style|subject|framing|details|color|general",
+      "keywords": [
+        {
+          "term_en": "cinematic golden hour lighting",
+          "why_ar": "short reason in Arabic",
+          "pinterest_query": "cinematic golden hour photography"
+        }
+      ]
+    }
+  ],
+  "combo_searches": [
+    {
+      "query_en": "luxury perfume editorial photography",
+      "use_ar": "when to use this combo in Arabic"
+    }
+  ],
+  "tips_ar": ["2-4 tips for effective Pinterest mood boarding in Arabic"],
+  "avoid_ar": ["terms to avoid and why, in Arabic"]
+}`;
+
+app.post("/api/pinterest-keywords", async (req, res) => {
+  const idea = (req.body?.idea || "").trim();
+  const style = (req.body?.style || "").trim();
+  const audience = (req.body?.audience || "").trim();
+
+  if (!idea) {
+    return res.status(400).json({ error: "اكتب مجال العمل أو الفكرة أولاً." });
+  }
+  if (idea.length > 2000) {
+    return res.status(400).json({ error: "النص طويل جداً (الحد ٢٠٠٠ حرف)." });
+  }
+
+  const apiKey = process.env.DEEPSEEK_API_KEY;
+  if (!apiKey) {
+    return res.status(500).json({
+      error: "مفتاح DeepSeek غير مضبوط. أنشئ ملف .env وأضف DEEPSEEK_API_KEY"
+    });
+  }
+
+  try {
+    const userMessage = [
+      `الفكرة / مجال العمل:\n${idea}`,
+      style && `الستايل المطلوب:\n${style}`,
+      audience && `الجمهور المستهدف:\n${audience}`
+    ].filter(Boolean).join("\n\n");
+
+    const apiRes = await fetch("https://api.deepseek.com/chat/completions", {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+        Authorization: `Bearer ${apiKey}`
+      },
+      body: JSON.stringify({
+        model: "deepseek-chat",
+        messages: [
+          { role: "system", content: PINTEREST_SYSTEM_PROMPT },
+          { role: "user", content: userMessage }
+        ],
+        temperature: 0.5,
+        response_format: { type: "json_object" }
+      })
+    });
+
+    const data = await apiRes.json();
+
+    if (!apiRes.ok) {
+      const msg = data?.error?.message || `DeepSeek error ${apiRes.status}`;
+      return res.status(apiRes.status).json({ error: msg });
+    }
+
+    const content = data.choices?.[0]?.message?.content;
+    if (!content) {
+      return res.status(502).json({ error: "رد فارغ من DeepSeek" });
+    }
+
+    let parsed;
+    try {
+      parsed = JSON.parse(content);
+    } catch {
+      return res.status(502).json({ error: "تعذّر قراءة اقتراحات DeepSeek", raw: content });
+    }
+
+    res.json(parsed);
+  } catch (err) {
+    console.error(err);
+    res.status(500).json({ error: "خطأ في الاتصال بـ DeepSeek — تأكد من الإنترنت." });
+  }
+});
+
 app.post("/api/image-to-prompt", async (req, res) => {
   const { image, mimeType } = req.body || {};
   if (!image) {
@@ -264,4 +374,5 @@ app.listen(PORT, () => {
   console.log(`SELF ADS server → http://localhost:${PORT}`);
   console.log(`Analyzer  → http://localhost:${PORT}/analyzer.html`);
   console.log(`Vision    → http://localhost:${PORT}/vision.html`);
+  console.log(`Pinterest → http://localhost:${PORT}/pinterest.html`);
 });

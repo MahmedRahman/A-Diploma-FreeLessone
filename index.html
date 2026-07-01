@@ -213,7 +213,7 @@
 
     .quick-tools-grid {
       display: grid;
-      grid-template-columns: repeat(4, 1fr);
+      grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
       gap: 0.85rem;
     }
 
@@ -250,11 +250,13 @@
     .quick-tool[data-t="build"]::before { background: linear-gradient(90deg, #4f6ef7, #6b8cff); }
     .quick-tool[data-t="analyze"]::before { background: linear-gradient(90deg, #059669, #10b981); }
     .quick-tool[data-t="vision"]::before { background: linear-gradient(90deg, #10a37f, #1a7f64); }
+    .quick-tool[data-t="pinterest"]::before { background: linear-gradient(90deg, #bd081c, #e60023); }
     .quick-tool[data-t="game"]::before { background: linear-gradient(90deg, #d97706, #f59e0b); }
 
     .quick-tool[data-t="build"]:hover { border-color: #93a8fd; }
     .quick-tool[data-t="analyze"]:hover { border-color: #6ee7b7; }
     .quick-tool[data-t="vision"]:hover { border-color: #6ee7b7; }
+    .quick-tool[data-t="pinterest"]:hover { border-color: #fca5a5; }
     .quick-tool[data-t="game"]:hover { border-color: #fcd34d; }
 
     .quick-tool-icon { font-size: 1.65rem; }
@@ -269,6 +271,7 @@
 
     .quick-tool[data-t="analyze"] .quick-tool-cta { color: #059669; }
     .quick-tool[data-t="vision"] .quick-tool-cta { color: #10a37f; }
+    .quick-tool[data-t="pinterest"] .quick-tool-cta { color: #bd081c; }
     .quick-tool[data-t="game"] .quick-tool-cta { color: #d97706; }
 
     /* Section */
@@ -1082,7 +1085,7 @@
 
     .tool-cta-grid {
       display: grid;
-      grid-template-columns: repeat(3, 1fr);
+      grid-template-columns: repeat(auto-fit, minmax(160px, 1fr));
       gap: 0.65rem;
       max-width: 720px;
       margin: 0 auto;
@@ -1122,6 +1125,11 @@
     .tool-cta-link.teal {
       background: linear-gradient(135deg, #10a37f, #1a7f64);
       box-shadow: 0 6px 20px rgba(16, 163, 127, 0.3);
+    }
+
+    .tool-cta-link.red {
+      background: linear-gradient(135deg, #bd081c, #e60023);
+      box-shadow: 0 6px 20px rgba(230, 0, 35, 0.3);
     }
 
     .tool-cta p {
@@ -1387,6 +1395,12 @@
           <h3>صورة → برومبت</h3>
           <p>ارفع صورة مرجعية واستخرج برومبت مشابه بصيغة Master Prompt.</p>
           <span class="quick-tool-cta">جرّب الآن ←</span>
+        </a>
+        <a href="pinterest.html" class="quick-tool" data-t="pinterest">
+          <span class="quick-tool-icon">📌</span>
+          <h3>تغذية بصرية</h3>
+          <p>اكتب فكرتك واحصل على كلمات بحث Pinterest للإلهام البصري.</p>
+          <span class="quick-tool-cta">ابدأ البحث ←</span>
         </a>
         <a href="game.html" class="quick-tool" data-t="game">
           <span class="quick-tool-icon">🎮</span>
@@ -1855,6 +1869,7 @@
         <a href="tool.html" class="tool-cta-link blue">🛠️ بناء البرومبت</a>
         <a href="analyzer.html" class="tool-cta-link green">🤖 محلّل البرومبت</a>
         <a href="vision.html" class="tool-cta-link teal">🖼️ صورة → برومبت</a>
+        <a href="pinterest.html" class="tool-cta-link red">📌 تغذية بصرية</a>
       </div>
       <p>طبّق SELF ADS عملياً أو <a href="analyzer.html"
           style="color:#059669;font-weight:700;text-decoration:none;">حلّل برومبت موجود</a></p>
@@ -1877,7 +1892,8 @@
         style="color:var(--accent);text-decoration:none;">Master Prompt</a> · <a href="tool.html"
         style="color:var(--accent);text-decoration:none;">الأداة</a> · <a href="analyzer.html"
         style="color:var(--accent);text-decoration:none;">🤖 المحلّل</a> · <a href="vision.html"
-        style="color:var(--accent);text-decoration:none;">🖼️ Vision</a> · <a href="game.html"
+        style="color:var(--accent);text-decoration:none;">🖼️ Vision</a> · <a href="pinterest.html"
+        style="color:var(--accent);text-decoration:none;">📌 Pinterest</a> · <a href="game.html"
         style="color:var(--accent);text-decoration:none;">🎮 اللعبة</a></p>
 
   </div>
