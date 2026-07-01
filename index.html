@@ -260,6 +260,10 @@
     .quick-tool[data-t="game"]:hover { border-color: #fcd34d; }
 
     .quick-tool-icon { font-size: 1.65rem; }
+    .quick-tool-step {
+      font-size: 0.68rem; font-weight: 800; color: var(--muted);
+      letter-spacing: 0.04em; text-transform: uppercase;
+    }
     .quick-tool h3 { font-size: 0.92rem; font-weight: 800; line-height: 1.4; }
     .quick-tool p { font-size: 0.78rem; color: var(--muted); line-height: 1.55; flex: 1; }
     .quick-tool-cta {
@@ -1374,33 +1378,37 @@
     <!-- Quick tools -->
     <section class="quick-tools" id="quick-tools">
       <div class="quick-tools-header">
-        <h2>⚡ ابدأ من هنا</h2>
-        <p>أدوات جاهزة تطبّق SELF ADS عملياً — بدون تعقيد</p>
+        <h2>⚡ الأدوات التفاعلية — بالترتيب</h2>
+        <p>١ تغذية بصرية ← ٢ تحليل ← ٣ بناء البرومبت</p>
       </div>
       <div class="quick-tools-grid">
+        <a href="pinterest.html" class="quick-tool" data-t="pinterest">
+          <span class="quick-tool-step">الأداة ١</span>
+          <span class="quick-tool-icon">📌</span>
+          <h3>التغذية البصرية</h3>
+          <p>ابحث على Pinterest عن حملات وصور إعلانية مرتبطة بفكرتك — كلمات بحث جاهزة.</p>
+          <span class="quick-tool-cta">ابدأ الإلهام ←</span>
+        </a>
+        <a href="analyzer.html" class="quick-tool" data-t="analyze">
+          <span class="quick-tool-step">الأداة ٢</span>
+          <span class="quick-tool-icon">🤖</span>
+          <h3>تحليل البرومبت</h3>
+          <p>الصق برومبتك واحصل على تقييم وتحسين فوري حسب SELF ADS.</p>
+          <span class="quick-tool-cta">حلّل برومبت ←</span>
+        </a>
+        <a href="vision.html" class="quick-tool" data-t="vision">
+          <span class="quick-tool-step">الأداة ٢</span>
+          <span class="quick-tool-icon">🖼️</span>
+          <h3>تحليل الصورة</h3>
+          <p>ارفع صورة مرجعية واستخرج برومبت مشابه بصيغة Master Prompt.</p>
+          <span class="quick-tool-cta">حلّل صورة ←</span>
+        </a>
         <a href="tool.html" class="quick-tool" data-t="build">
+          <span class="quick-tool-step">الأداة ٣</span>
           <span class="quick-tool-icon">🛠️</span>
           <h3>بناء البرومبت</h3>
           <p>املأ ٧ مبادئ SELF ADS خطوة بخطوة وانسخ Master Prompt جاهز.</p>
-          <span class="quick-tool-cta">افتح الأداة ←</span>
-        </a>
-        <a href="analyzer.html" class="quick-tool" data-t="analyze">
-          <span class="quick-tool-icon">🤖</span>
-          <h3>محلّل البرومبت</h3>
-          <p>الصق برومبتك واحصل على تقييم وتحسين فوري حسب SELF ADS.</p>
-          <span class="quick-tool-cta">حلّل الآن ←</span>
-        </a>
-        <a href="vision.html" class="quick-tool" data-t="vision">
-          <span class="quick-tool-icon">🖼️</span>
-          <h3>صورة → برومبت</h3>
-          <p>ارفع صورة مرجعية واستخرج برومبت مشابه بصيغة Master Prompt.</p>
-          <span class="quick-tool-cta">جرّب الآن ←</span>
-        </a>
-        <a href="pinterest.html" class="quick-tool" data-t="pinterest">
-          <span class="quick-tool-icon">📌</span>
-          <h3>بحث Pinterest</h3>
-          <p>اكتب موضوعك واحصل على كلمات بحث لحملات إعلانية وصور ولها علاقة بيه على Pinterest.</p>
-          <span class="quick-tool-cta">ابدأ البحث ←</span>
+          <span class="quick-tool-cta">ابنِ برومبتك ←</span>
         </a>
         <a href="game.html" class="quick-tool" data-t="game">
           <span class="quick-tool-icon">🎮</span>
@@ -1855,7 +1863,7 @@
     <!-- Tool CTA -->
     <div class="tool-cta" id="tool">
       <h2>🚀 جاهز تطبّق؟</h2>
-      <p class="tool-cta-sub">ابدأ بالقالب المتكامل ثم استخدم الأدوات التفاعلية</p>
+      <p class="tool-cta-sub">١ تغذية بصرية ← ٢ تحليل برومبت أو صورة ← ٣ بناء البرومبت</p>
 
       <a href="master-prompt.html" class="master-prompt-feature">
         <span class="mp-icon">👑</span>
@@ -1866,13 +1874,14 @@
 
       <p class="tool-cta-tools-label">الأدوات التفاعلية</p>
       <div class="tool-cta-grid">
-        <a href="tool.html" class="tool-cta-link blue">🛠️ بناء البرومبت</a>
-        <a href="analyzer.html" class="tool-cta-link green">🤖 محلّل البرومبت</a>
-        <a href="vision.html" class="tool-cta-link teal">🖼️ صورة → برومبت</a>
-        <a href="pinterest.html" class="tool-cta-link red">📌 بحث Pinterest</a>
+        <a href="pinterest.html" class="tool-cta-link red">١ · التغذية البصرية</a>
+        <a href="analyzer.html" class="tool-cta-link green">٢ · تحليل برومبت</a>
+        <a href="vision.html" class="tool-cta-link teal">٢ · تحليل صورة</a>
+        <a href="tool.html" class="tool-cta-link blue">٣ · بناء البرومبت</a>
       </div>
-      <p>طبّق SELF ADS عملياً أو <a href="analyzer.html"
-          style="color:#059669;font-weight:700;text-decoration:none;">حلّل برومبت موجود</a></p>
+      <p>ابدأ بـ <a href="pinterest.html"
+          style="color:#bd081c;font-weight:700;text-decoration:none;">التغذية البصرية</a> ثم <a href="tool.html"
+          style="color:var(--accent);font-weight:700;text-decoration:none;">ابنِ برومبتك</a></p>
     </div>
 
     <!-- Golden Rule -->
@@ -1880,8 +1889,8 @@
       <span class="crown">👑</span>
       <h2>القاعدة الذهبية</h2>
       <p>كل صورة احترافية تبدأ من Prompt احترافي.</p>
-      <p style="margin-top:1rem;"><a href="tool.html" class="btn-go-tool"
-          style="font-size:0.95rem;padding:0.75rem 1.5rem;">🛠️ ابدأ بناء برومبتك الآن</a></p>
+      <p style="margin-top:1rem;"><a href="pinterest.html" class="btn-go-tool"
+          style="font-size:0.95rem;padding:0.75rem 1.5rem;background:linear-gradient(135deg,#bd081c,#e60023);">📌 ابدأ بالتغذية البصرية</a></p>
     </div>
 
     <p class="footer-note">📚 SELF ADS — <a href="framing.html"
@@ -1889,11 +1898,11 @@
         style="color:var(--accent);text-decoration:none;">Lighting</a> · <a href="aspect.html"
         style="color:var(--accent);text-decoration:none;">Aspect</a> · <a href="style.html"
         style="color:var(--accent);text-decoration:none;">Style</a> · <a href="master-prompt.html"
-        style="color:var(--accent);text-decoration:none;">Master Prompt</a> · <a href="tool.html"
-        style="color:var(--accent);text-decoration:none;">الأداة</a> · <a href="analyzer.html"
-        style="color:var(--accent);text-decoration:none;">🤖 المحلّل</a> · <a href="vision.html"
-        style="color:var(--accent);text-decoration:none;">🖼️ Vision</a> · <a href="pinterest.html"
-        style="color:var(--accent);text-decoration:none;">📌 Pinterest</a> · <a href="game.html"
+        style="color:var(--accent);text-decoration:none;">Master Prompt</a> · <a href="pinterest.html"
+        style="color:var(--accent);text-decoration:none;">📌 التغذية البصرية</a> · <a href="analyzer.html"
+        style="color:var(--accent);text-decoration:none;">🤖 تحليل برومبت</a> · <a href="vision.html"
+        style="color:var(--accent);text-decoration:none;">🖼️ تحليل صورة</a> · <a href="tool.html"
+        style="color:var(--accent);text-decoration:none;">🛠️ بناء البرومبت</a> · <a href="game.html"
         style="color:var(--accent);text-decoration:none;">🎮 اللعبة</a></p>
 
   </div>
