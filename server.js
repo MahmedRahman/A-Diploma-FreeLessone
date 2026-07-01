@@ -62,7 +62,6 @@ Respond ONLY with valid JSON in this exact structure (all text fields in Arabic 
 }`;
 
 app.use(express.json({ limit: "20mb" }));
-app.use(express.static(path.join(__dirname)));
 
 const MASTER_PROMPT_TEMPLATE = `Generate a cinematic photorealistic image in [composition] with [camera settings].
 Apply [film grain level].
@@ -399,6 +398,19 @@ app.post("/api/image-to-prompt", async (req, res) => {
     res.status(500).json({ error: "خطأ في الاتصال بـ OpenAI — تأكد من الإنترنت." });
   }
 });
+
+app.get("/api/health", (_req, res) => {
+  res.json({
+    ok: true,
+    routes: ["/api/analyze", "/api/pinterest-keywords", "/api/image-to-prompt"]
+  });
+});
+
+app.use("/api", (req, res) => {
+  res.status(404).json({ error: `مسار API غير موجود: ${req.method} ${req.originalUrl}` });
+});
+
+app.use(express.static(path.join(__dirname)));
 
 app.listen(PORT, () => {
   console.log(`SELF ADS server → http://localhost:${PORT}`);

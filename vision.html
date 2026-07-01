@@ -259,6 +259,7 @@
 
   <div class="toast" id="toast">تم النسخ ✓</div>
 
+  <script src="assets/api.js"></script>
   <script>
     const PRINCIPLE_ORDER = [
       { key: "subject", letter: "S", title: "Subject — الموضوع" },
@@ -389,13 +390,11 @@
       analyzeBtn.disabled = true;
 
       try {
-        const res = await fetch("/api/image-to-prompt", {
+        const data = await AppApi.fetch("/api/image-to-prompt", {
           method: "POST",
           headers: { "Content-Type": "application/json" },
           body: JSON.stringify({ image: imageBase64, mimeType: imageMime })
         });
-        const data = await res.json();
-        if (!res.ok) throw new Error(data.error || "فشل التحليل");
         renderResults(data);
       } catch (err) {
         if (location.protocol === "file:") {

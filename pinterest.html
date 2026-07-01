@@ -375,6 +375,7 @@
 
   <div class="toast" id="toast">تم النسخ ✓</div>
 
+  <script src="assets/api.js"></script>
   <script>
     const EXAMPLE_IDEA = "حملات إعلانية لمطاعم برجر — صور سوشيال ميديا، بوسترات، وتصوير منتجات الوجبات";
     const EXAMPLE_AUDIENCE = "مطاعم محلية وسلاسل وجبات سريعة";
@@ -619,7 +620,7 @@
       suggestBtn.disabled = true;
 
       try {
-        const res = await fetch("/api/pinterest-keywords", {
+        const data = await AppApi.fetch("/api/pinterest-keywords", {
           method: "POST",
           headers: { "Content-Type": "application/json" },
           body: JSON.stringify({
@@ -628,12 +629,6 @@
             styles: getSelectedStyles()
           })
         });
-
-        const data = await res.json();
-
-        if (!res.ok) {
-          throw new Error(data.error || "فشل الاقتراح");
-        }
 
         renderResults(data);
       } catch (err) {

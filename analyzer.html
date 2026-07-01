@@ -262,6 +262,7 @@
 
   <div class="toast" id="toast">تم النسخ ✓</div>
 
+  <script src="assets/api.js"></script>
   <script>
     const PRINCIPLE_ORDER = [
       { key: "subject", letter: "S", title: "Subject — الموضوع" },
@@ -374,17 +375,11 @@
       analyzeBtn.disabled = true;
 
       try {
-        const res = await fetch("/api/analyze", {
+        const data = await AppApi.fetch("/api/analyze", {
           method: "POST",
           headers: { "Content-Type": "application/json" },
           body: JSON.stringify({ prompt })
         });
-
-        const data = await res.json();
-
-        if (!res.ok) {
-          throw new Error(data.error || "فشل التحليل");
-        }
 
         renderResults(data);
       } catch (err) {
