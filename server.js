@@ -179,54 +179,78 @@ app.post("/api/analyze", async (req, res) => {
   }
 });
 
-const PINTEREST_SYSTEM_PROMPT = `You are a visual research coach for AI image creators (Arabic educational course: SELF ADS).
+const STYLE_KEYWORD_BANKS = `
+1. PRODUCT / E-COMMERCE (تصوير منتج):
+white background, clean composition, minimalistic, studio lighting, product only, high resolution, sharp focus, neutral colors, product details, e-commerce style, isolated object, crisp image, plain backdrop, bright lighting, color accurate, catalog, seamless, clear textures, product-centric
 
-The user describes their work field, project idea, or creative direction.
-Suggest Pinterest search keywords for visual mood boarding and inspiration before writing AI image prompts.
+2. LIFESTYLE (لايف ستايل):
+lifestyle, real environment, natural light, cozy scene, props, everyday life, candid style, in-use, authentic, relatable, organic feel, home interior, outdoor setting, casual, narrative, warm tones, soft focus background, storytelling, realistic scene, authentic atmosphere, human touch
+
+3. FASHION / MODEL (فاشن وموديل):
+model portrait, fashion photography, studio backdrop, stylish pose, outfit styling, full body shot, 3/4 view, editorial look, trendy, sleek, brand style, clothing detail, natural pose, hair and makeup, product showcased, high fashion, professional model, soft shadows, vibrant color, fashion editorial
+
+4. CREATIVE / CONCEPTUAL (إبداعي ومفاهيمي):
+creative concept, conceptual art, surreal, dramatic lighting, bold color, imaginative, abstract props, dynamic composition, floating objects, moody atmosphere, cinematic, striking visuals, dreamlike, fine art, thematic, unique perspective, high contrast, storytelling, artistic, experimental
+`;
+
+const PINTEREST_SYSTEM_PROMPT = `You are an expert in visual research and advertising inspiration on Pinterest.
+
+The user describes a topic they want to research on Pinterest (campaigns, ads, visuals).
+Suggest Pinterest COMBO SEARCH phrases — ready-to-copy full search queries that ALWAYS include the user's core topic AND visual style keywords.
+
+VISUAL STYLE KEYWORD BANKS (use these to build searches — combine user topic + 2-3 keywords from the relevant bank):
+${STYLE_KEYWORD_BANKS}
+
+CRITICAL RULES:
+- EVERY search query MUST contain the user's topic (translated to English)
+- EVERY search query MUST also include 1-3 style keywords from the banks above (e.g. "burger restaurant white background product photography", "coffee brand lifestyle natural light authentic")
+- Distribute combo_searches across the user's selected style categories (style_keys). If user selected product + lifestyle, give ~half queries for each style type
+- Each combo maps to one style_key: product | lifestyle | fashion | creative
+- style_keywords_used: list the 2-4 bank keywords you combined in that query
+- prompt_keywords_en: same keywords ready to paste into an AI image prompt (topic + style words)
+- category_ar: Arabic label matching the style (تصوير منتج، لايف ستايل، فاشن وموديل، إبداعي)
+
+Focus: help user find ad campaigns and visuals on Pinterest, AND collect keywords they can reuse when writing image prompts.
 
 Rules:
-- Keywords must work well on Pinterest (visual, specific, searchable in English)
-- Provide 5-7 keyword groups with 4-6 keywords each
-- Mix broad and niche terms
-- Include 4-6 "combo searches" (2-4 words that work together on Pinterest)
-- Relate suggestions to SELF ADS when possible (subject, environment, lighting, framing, style, details)
-- Avoid generic useless terms like "beautiful", "nice", "cool"
-- pinterest_query should be the best English search phrase for Pinterest (can differ slightly from term_en)
+- All queries in English
+- Provide 12-16 combo_searches (3-4 per selected style category)
+- Each query: 4-8 words, specific, topic + style keywords + ad type when useful
+- use_ar: what ads/images this search shows + how to use keywords in prompt, in Arabic
+- topic_en: core English topic (2-4 words)
+- prompt_tip_ar: one sentence in Arabic — how these keywords help when writing a prompt
 
 Respond ONLY with valid JSON:
 {
-  "summary_ar": "2-3 sentences explaining the visual direction in Arabic",
-  "mood_ar": "the intended mood/feeling in Arabic",
-  "keyword_groups": [
-    {
-      "title_ar": "Arabic group name e.g. الإضاءة",
-      "self_ads_key": "lighting|environment|style|subject|framing|details|color|general",
-      "keywords": [
-        {
-          "term_en": "cinematic golden hour lighting",
-          "why_ar": "short reason in Arabic",
-          "pinterest_query": "cinematic golden hour photography"
-        }
-      ]
-    }
-  ],
+  "topic_en": "burger restaurant",
+  "summary_ar": "2-3 sentences in Arabic",
+  "mood_ar": "campaign mood in Arabic",
+  "prompt_tip_ar": "جملة واحدة: ازاي تستخدم الكلمات دي في كتابة البرومبت",
   "combo_searches": [
     {
-      "query_en": "luxury perfume editorial photography",
-      "use_ar": "when to use this combo in Arabic"
+      "query_en": "burger restaurant white background product photography ads",
+      "style_key": "product",
+      "category_ar": "تصوير منتج",
+      "style_keywords_used": ["white background", "studio lighting", "e-commerce style"],
+      "prompt_keywords_en": "burger restaurant, white background, studio lighting, product-centric, e-commerce style",
+      "use_ar": "إعلانات منتج بخلفية بيضاء — انسخ الكلمات في البرومبت للستايل النظيف"
     }
   ],
-  "tips_ar": ["2-4 tips for effective Pinterest mood boarding in Arabic"],
-  "avoid_ar": ["terms to avoid and why, in Arabic"]
+  "tips_ar": ["2-4 tips in Arabic about Pinterest search AND using keywords in prompts"],
+  "avoid_ar": ["weak terms in Arabic"]
 }`;
 
 app.post("/api/pinterest-keywords", async (req, res) => {
   const idea = (req.body?.idea || "").trim();
-  const style = (req.body?.style || "").trim();
   const audience = (req.body?.audience || "").trim();
+  const styles = Array.isArray(req.body?.styles) ? req.body.styles.filter(Boolean) : [];
+  const validStyles = ["product", "lifestyle", "fashion", "creative"];
+  const selectedStyles = styles.length
+    ? styles.filter(s => validStyles.includes(s))
+    : validStyles;
 
   if (!idea) {
-    return res.status(400).json({ error: "اكتب مجال العمل أو الفكرة أولاً." });
+    return res.status(400).json({ error: "اكتب الموضوع اللي بتدور عليه أولاً." });
   }
   if (idea.length > 2000) {
     return res.status(400).json({ error: "النص طويل جداً (الحد ٢٠٠٠ حرف)." });
@@ -240,10 +264,16 @@ app.post("/api/pinterest-keywords", async (req, res) => {
   }
 
   try {
+    const styleLabels = {
+      product: "تصوير منتج / E-commerce",
+      lifestyle: "لايف ستايل",
+      fashion: "فاشن وموديل",
+      creative: "إبداعي ومفاهيمي"
+    };
     const userMessage = [
-      `الفكرة / مجال العمل:\n${idea}`,
-      style && `الستايل المطلوب:\n${style}`,
-      audience && `الجمهور المستهدف:\n${audience}`
+      `الموضوع اللي بدور عليه على Pinterest:\n${idea}`,
+      `أنواع الستايل المطلوبة:\n${selectedStyles.map(s => `- ${styleLabels[s] || s}`).join("\n")}`,
+      audience && `الجمهور أو نوع العلامة:\n${audience}`
     ].filter(Boolean).join("\n\n");
 
     const apiRes = await fetch("https://api.deepseek.com/chat/completions", {

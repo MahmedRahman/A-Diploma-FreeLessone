@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>تغذية بصرية — Pinterest | SELF ADS</title>
+  <title>بحث Pinterest — حملات إعلانية | SELF ADS</title>
   <style>
     :root {
       --bg: #f4f6fb; --surface: #fff; --text: #1a2233; --muted: #5c667a; --border: #dde3ef;
@@ -86,6 +86,58 @@
       border: 2px solid var(--border); border-radius: var(--radius-sm); transition: border-color 0.2s;
     }
     .optional-field input:focus { outline: none; border-color: var(--pin-accent); }
+    .style-picker { margin-top: 1rem; }
+    .style-picker > label { font-size: 0.82rem; font-weight: 700; color: var(--muted); margin-bottom: 0.5rem; display: block; }
+    .style-chips { display: flex; flex-wrap: wrap; gap: 0.45rem; }
+    .style-chip {
+      font-family: inherit; font-size: 0.78rem; font-weight: 700; padding: 0.45rem 0.85rem;
+      border-radius: 99px; border: 2px solid var(--border); background: var(--surface);
+      color: var(--muted); cursor: pointer; transition: all 0.2s;
+    }
+    .style-chip:hover { border-color: var(--pin-accent); color: var(--pin); }
+    .style-chip.active {
+      border-color: var(--pin-accent); background: var(--pin-soft); color: var(--pin);
+    }
+    .kw-banks {
+      background: var(--surface); border: 1px solid var(--border); border-radius: var(--radius);
+      padding: 1.15rem 1.25rem; box-shadow: var(--shadow); margin-bottom: 1.5rem;
+    }
+    .kw-banks summary {
+      font-size: 0.92rem; font-weight: 800; cursor: pointer; list-style: none;
+      display: flex; align-items: center; gap: 0.5rem;
+    }
+    .kw-banks summary::-webkit-details-marker { display: none; }
+    .kw-banks-intro {
+      font-size: 0.82rem; color: var(--muted); margin: 0.75rem 0 1rem;
+    }
+    .kw-bank { margin-bottom: 1rem; }
+    .kw-bank:last-child { margin-bottom: 0; }
+    .kw-bank h3 { font-size: 0.85rem; font-weight: 800; margin-bottom: 0.45rem; }
+    .kw-bank p { font-size: 0.78rem; color: var(--muted); margin-bottom: 0.5rem; }
+    .kw-tags { display: flex; flex-wrap: wrap; gap: 0.35rem; }
+    .kw-tag {
+      font-size: 0.72rem; font-weight: 600; padding: 0.25rem 0.55rem; border-radius: 99px;
+      background: #f1f5f9; color: var(--text); border: 1px solid var(--border);
+      cursor: pointer; direction: ltr; transition: all 0.2s;
+    }
+    .kw-tag:hover { background: var(--pin-soft); border-color: var(--pin-accent); color: var(--pin); }
+    .prompt-kw-row {
+      display: flex; flex-wrap: wrap; align-items: center; gap: 0.35rem;
+      margin-bottom: 0.65rem; padding: 0.55rem 0.65rem;
+      background: #f0fdf4; border-radius: var(--radius-sm); border: 1px solid #bbf7d0;
+    }
+    .prompt-kw-label { font-size: 0.72rem; font-weight: 700; color: #065f46; }
+    .prompt-kw-text {
+      font-size: 0.78rem; direction: ltr; text-align: left; color: #166534; flex: 1;
+    }
+    .prompt-tip-box {
+      background: #eff6ff; border: 1px solid #bfdbfe; border-radius: var(--radius-sm);
+      padding: 0.85rem 1rem; font-size: 0.85rem; color: #1e40af; margin-bottom: 1.25rem;
+    }
+    .combo-card[data-style="product"] { border-right-color: #3b82f6; }
+    .combo-card[data-style="lifestyle"] { border-right-color: #0d9f6e; }
+    .combo-card[data-style="fashion"] { border-right-color: #7c5cbf; }
+    .combo-card[data-style="creative"] { border-right-color: #d97706; }
     .input-actions {
       display: flex; flex-wrap: wrap; gap: 0.6rem; margin-top: 1rem; align-items: center;
     }
@@ -175,15 +227,38 @@
     .btn-sm.pin { background: var(--pin); color: #fff; border-color: var(--pin); }
     .btn-sm.pin:hover { background: #bd081c; }
     .combo-section { margin-bottom: 1.5rem; }
-    .combo-section h2 { font-size: 1.05rem; font-weight: 800; margin-bottom: 0.85rem; }
+    .combo-section-head {
+      display: flex; flex-wrap: wrap; align-items: center; gap: 0.65rem;
+      margin-bottom: 0.35rem;
+    }
+    .combo-section h2 { font-size: 1.05rem; font-weight: 800; flex: 1; }
+    .combo-section-sub { font-size: 0.82rem; color: var(--muted); margin-bottom: 0.85rem; }
+    .topic-pill {
+      display: inline-block; font-size: 0.78rem; font-weight: 700; direction: ltr;
+      background: var(--pin-soft); color: var(--pin); padding: 0.25rem 0.7rem;
+      border-radius: 99px; border: 1px solid rgba(230,0,35,0.2);
+    }
     .combo-grid { display: flex; flex-direction: column; gap: 0.65rem; }
     .combo-card {
       background: var(--surface); border: 1px solid var(--border); border-radius: var(--radius-sm);
       padding: 1rem 1.15rem; box-shadow: var(--shadow);
+      border-right: 3px solid var(--pin-accent);
+    }
+    .combo-top {
+      display: flex; flex-wrap: wrap; align-items: center; gap: 0.5rem; margin-bottom: 0.5rem;
+    }
+    .combo-cat {
+      font-size: 0.72rem; font-weight: 700; padding: 0.2rem 0.55rem; border-radius: 99px;
+      background: #f1f5f9; color: var(--muted);
     }
     .combo-query {
-      font-weight: 800; font-size: 0.9rem; direction: ltr; text-align: left;
-      margin-bottom: 0.35rem; color: var(--pin);
+      font-weight: 800; font-size: 0.95rem; direction: ltr; text-align: left;
+      margin-bottom: 0.35rem; color: var(--text); line-height: 1.5;
+      width: 100%;
+    }
+    .combo-query .topic-hl {
+      color: var(--pin); background: var(--pin-soft);
+      padding: 0.05rem 0.25rem; border-radius: 4px;
     }
     .combo-use { font-size: 0.82rem; color: var(--muted); margin-bottom: 0.65rem; }
     .tips-list, .avoid-list {
@@ -218,9 +293,9 @@
 
     <header class="hero">
       <span class="hero-badge">📌 DeepSeek + Pinterest</span>
-      <h1>تغذية بصرية — كلمات Pinterest</h1>
-      <p>اكتب <strong>مجال عملك أو فكرتك</strong> — DeepSeek يقترح لك كلمات بحث على Pinterest للإلهام البصري قبل كتابة البرومبت.</p>
-      <span class="hero-tag">Mood Board · Visual Research · SELF ADS</span>
+      <h1>بحث Pinterest — حملات وصور إعلانية</h1>
+      <p>اكتب <strong>الموضوع اللي بتدور عليه</strong> — هتحصل على عبارات بحث فيها موضوعك + كلمات مفتاحية للستايل، تستخدمها على Pinterest وفي كتابة البرومبت.</p>
+      <span class="hero-tag">Product · Lifestyle · Fashion · Creative</span>
     </header>
 
     <div class="server-note" id="serverNote">
@@ -229,24 +304,35 @@
       ثم افتح <code>http://localhost:3000/pinterest.html</code>
     </div>
 
+    <details class="kw-banks" open>
+      <summary>📚 دليل الكلمات المفتاحية — ٤ أنواع تصوير</summary>
+      <p class="kw-banks-intro">كل كلمة تفتح خيالك لما تبحث بيها على Pinterest — وتقدر تدمجها في البرومبت لما تكتب وصف الصورة.</p>
+      <div id="kwBanksContainer"></div>
+    </details>
+
     <div class="input-panel">
-      <label for="ideaInput">💡 مجال العمل / الفكرة</label>
-      <textarea id="ideaInput" class="idea-input" placeholder='مثال: "إعلان عطر فاخر للنساء — أجواء ليلية رومانسية" أو "كافيه عصري للشباب"...'></textarea>
+      <label for="ideaInput">🔍 عن إيه بتدور؟</label>
+      <textarea id="ideaInput" class="idea-input" placeholder='مثال: "حملات إعلانية لمطاعم برجر" أو "إعلانات تطبيق توصيل طعام" أو "تصوير منتجات قهوة"...'></textarea>
       <div class="optional-row">
-        <div class="optional-field">
-          <label for="styleInput">الستايل المطلوب (اختياري)</label>
-          <input id="styleInput" type="text" placeholder="مثال: cinematic, editorial, minimalist" />
+        <div class="optional-field" style="grid-column: 1 / -1">
+          <label for="audienceInput">الجمهور أو نوع العلامة (اختياري)</label>
+          <input id="audienceInput" type="text" placeholder="مثال: علامة محلية، ستارت أب، براند فاخر" />
         </div>
-        <div class="optional-field">
-          <label for="audienceInput">الجمهور المستهدف (اختياري)</label>
-          <input id="audienceInput" type="text" placeholder="مثال: نساء ٢٥-٣٥، علامة تجارية فاخرة" />
+      </div>
+      <div class="style-picker">
+        <label>نوع التصوير / الستايل — اختر واحد أو أكتر</label>
+        <div class="style-chips" id="styleChips">
+          <button type="button" class="style-chip active" data-style="product">📦 منتج / E-commerce</button>
+          <button type="button" class="style-chip active" data-style="lifestyle">🏠 لايف ستايل</button>
+          <button type="button" class="style-chip active" data-style="fashion">👗 فاشن وموديل</button>
+          <button type="button" class="style-chip active" data-style="creative">🎨 إبداعي</button>
         </div>
       </div>
       <div class="input-actions">
         <span class="char-count" id="charCount">٠ حرف</span>
         <button type="button" class="btn-secondary" id="exampleBtn">مثال</button>
         <button type="button" class="btn-secondary" id="clearBtn">مسح</button>
-        <button type="button" class="btn-primary" id="suggestBtn">📌 اقترح كلمات Pinterest</button>
+        <button type="button" class="btn-primary" id="suggestBtn">📌 اقترح كلمات بحث</button>
       </div>
     </div>
 
@@ -254,25 +340,23 @@
 
     <div class="loading" id="loading">
       <div class="spinner"></div>
-      <p>DeepSeek بيجهّز كلمات البحث البصرية…</p>
+      <p>بيجهّز كلمات البحث للحملات الإعلانية…</p>
     </div>
 
     <div class="results" id="results">
       <div class="summary-card" id="summaryCard"></div>
 
-      <div class="results-toolbar">
-        <button type="button" class="btn-copy-all" id="copyAllBtn">📋 نسخ كل الكلمات</button>
-        <h2>🔍 مجموعات الكلمات</h2>
-      </div>
-      <div id="groupsContainer"></div>
-
       <div class="combo-section" id="comboSection" style="display:none">
-        <h2>⚡ بحث مركّب — جاهز للنسخ</h2>
+        <div class="combo-section-head">
+          <h2>⚡ بحث مركّب — جاهز للنسخ</h2>
+          <button type="button" class="btn-copy-all" id="copyAllBtn">📋 نسخ الكل</button>
+        </div>
+        <p class="combo-section-sub">كل عبارة = موضوعك + كلمات ستايل — للبحث على Pinterest أو البرومبت</p>
         <div class="combo-grid" id="comboGrid"></div>
       </div>
 
       <div class="tips-list" id="tipsList" style="display:none">
-        <h3>💡 نصائح للتغذية البصرية</h3>
+        <h3>💡 نصائح للبحث على Pinterest</h3>
         <ul id="tipsUl"></ul>
       </div>
 
@@ -292,12 +376,53 @@
   <div class="toast" id="toast">تم النسخ ✓</div>
 
   <script>
-    const EXAMPLE_IDEA = "حملة إعلانية لمنتج عناية بالبشرة طبيعي — أجواء صباحية نظيفة، ألوان هادئة، إحساس بالنضارة والثقة";
-    const EXAMPLE_STYLE = "clean beauty editorial, soft natural light";
-    const EXAMPLE_AUDIENCE = "نساء ٢٠-٣٥، مهتمات بالعناية الطبيعية";
+    const EXAMPLE_IDEA = "حملات إعلانية لمطاعم برجر — صور سوشيال ميديا، بوسترات، وتصوير منتجات الوجبات";
+    const EXAMPLE_AUDIENCE = "مطاعم محلية وسلاسل وجبات سريعة";
+
+    const STYLE_BANKS = {
+      product: {
+        title: "📦 تصوير منتج — Product / E-commerce",
+        desc: "خلفية بيضاء، استوديو، كتالوج، مينيمال — مثالي لصور المنتج والمتاجر الإلكترونية",
+        keywords: [
+          "white background", "clean composition", "minimalistic", "studio lighting", "product only",
+          "high resolution", "sharp focus", "neutral colors", "product details", "e-commerce style",
+          "isolated object", "crisp image", "plain backdrop", "bright lighting", "color accurate",
+          "catalog", "seamless", "clear textures", "product-centric"
+        ]
+      },
+      lifestyle: {
+        title: "🏠 لايف ستايل — Lifestyle",
+        desc: "بيئة حقيقية، إضاءة طبيعية، مشهد يومي — يخلّي المنتج قريب من حياة العميل",
+        keywords: [
+          "lifestyle", "real environment", "natural light", "cozy scene", "props", "everyday life",
+          "candid style", "in-use", "authentic", "relatable", "organic feel", "home interior",
+          "outdoor setting", "casual", "narrative", "warm tones", "soft focus background",
+          "storytelling", "realistic scene", "authentic atmosphere", "human touch"
+        ]
+      },
+      fashion: {
+        title: "👗 فاشن وموديل — Fashion / Model",
+        desc: "موديل، أزياء، إطلالة تحريرية — للبراندات والملابس والإكسسوارات",
+        keywords: [
+          "model portrait", "fashion photography", "studio backdrop", "stylish pose", "outfit styling",
+          "full body shot", "3/4 view", "editorial look", "trendy", "sleek", "brand style",
+          "clothing detail", "natural pose", "hair and makeup", "product showcased", "high fashion",
+          "professional model", "soft shadows", "vibrant color", "fashion editorial"
+        ]
+      },
+      creative: {
+        title: "🎨 إبداعي ومفاهيمي — Creative / Conceptual",
+        desc: "أفكار جريئة، إضاءة درامية، سريالية — لما عايز إعلان يفرق ويلفت النظر",
+        keywords: [
+          "creative concept", "conceptual art", "surreal", "dramatic lighting", "bold color",
+          "imaginative", "abstract props", "dynamic composition", "floating objects", "moody atmosphere",
+          "cinematic", "striking visuals", "dreamlike", "fine art", "thematic", "unique perspective",
+          "high contrast", "storytelling", "artistic", "experimental"
+        ]
+      }
+    };
 
     const ideaInput = document.getElementById("ideaInput");
-    const styleInput = document.getElementById("styleInput");
     const audienceInput = document.getElementById("audienceInput");
     const suggestBtn = document.getElementById("suggestBtn");
     const loading = document.getElementById("loading");
@@ -306,7 +431,48 @@
     const serverNote = document.getElementById("serverNote");
     const toast = document.getElementById("toast");
 
+    function getSelectedStyles() {
+      return [...document.querySelectorAll(".style-chip.active")]
+        .map(btn => btn.dataset.style);
+    }
+
+    function buildSearchQuery(topic, keyword) {
+      const parts = [topic, keyword].filter(Boolean).join(" ").trim();
+      return parts || keyword;
+    }
+
+    function renderKwBanks() {
+      const container = document.getElementById("kwBanksContainer");
+      container.innerHTML = Object.entries(STYLE_BANKS).map(([key, bank]) => `
+        <div class="kw-bank" data-bank="${key}">
+          <h3>${bank.title}</h3>
+          <p>${bank.desc}</p>
+          <div class="kw-tags">
+            ${bank.keywords.map(kw => `<button type="button" class="kw-tag" data-kw="${escapeHtml(kw)}" title="ابحث على Pinterest">${escapeHtml(kw)}</button>`).join("")}
+          </div>
+        </div>
+      `).join("");
+
+      container.querySelectorAll(".kw-tag").forEach(tag => {
+        tag.addEventListener("click", () => {
+          const idea = ideaInput.value.trim();
+          const topic = lastTopicEn || idea;
+          const query = buildSearchQuery(topic, tag.dataset.kw);
+          window.open(pinterestUrl(query), "_blank", "noopener");
+        });
+      });
+    }
+
+    document.querySelectorAll(".style-chip").forEach(chip => {
+      chip.addEventListener("click", () => {
+        chip.classList.toggle("active");
+        const active = getSelectedStyles();
+        if (!active.length) chip.classList.add("active");
+      });
+    });
+
     let lastData = null;
+    let lastTopicEn = "";
 
     function toArabicNum(n) {
       return String(n).replace(/\d/g, d => "٠١٢٣٤٥٦٧٨٩"[d]);
@@ -322,6 +488,22 @@
         .replace(/</g, "&lt;")
         .replace(/>/g, "&gt;")
         .replace(/"/g, "&quot;");
+    }
+
+    renderKwBanks();
+
+    function highlightTopicInQuery(query, topic) {
+      if (!topic || !query) return escapeHtml(query);
+      const words = topic.trim().split(/\s+/).filter(w => w.length > 2);
+      if (!words.length) return escapeHtml(query);
+
+      let html = escapeHtml(query);
+      words.forEach(word => {
+        const escapedWord = escapeHtml(word);
+        const re = new RegExp(`(${escapedWord.replace(/[.*+?^${}()|[\]\\]/g, "\\$&")})`, "gi");
+        html = html.replace(re, '<span class="topic-hl">$1</span>');
+      });
+      return html;
     }
 
     async function copyText(text) {
@@ -349,62 +531,22 @@
     }
 
     function collectAllQueries(data) {
-      const queries = [];
-      (data.keyword_groups || []).forEach(g => {
-        (g.keywords || []).forEach(k => {
-          queries.push(k.pinterest_query || k.term_en);
-        });
-      });
-      (data.combo_searches || []).forEach(c => {
-        queries.push(c.query_en);
-      });
-      return queries.filter(Boolean);
+      return (data.combo_searches || [])
+        .map(c => c.query_en)
+        .filter(Boolean);
     }
 
     function renderResults(data) {
       lastData = data;
+      lastTopicEn = data.topic_en || "";
 
       document.getElementById("summaryCard").innerHTML = `
-        <h2>الاتجاه البصري</h2>
-        ${data.mood_ar ? `<span class="mood-badge">🎭 ${escapeHtml(data.mood_ar)}</span>` : ""}
+        <h2>إيه اللي هتدور عليه</h2>
+        ${data.topic_en ? `<span class="topic-pill">📌 ${escapeHtml(data.topic_en)}</span>` : ""}
+        ${data.mood_ar ? `<span class="mood-badge">🎯 ${escapeHtml(data.mood_ar)}</span>` : ""}
         <p class="summary-text">${escapeHtml(data.summary_ar || "")}</p>
+        ${data.prompt_tip_ar ? `<div class="prompt-tip-box">✍️ ${escapeHtml(data.prompt_tip_ar)} <a href="tool.html" style="color:#1d4ed8;font-weight:700">→ أداة بناء البرومبت</a></div>` : ""}
       `;
-
-      const groupsContainer = document.getElementById("groupsContainer");
-      groupsContainer.innerHTML = "";
-
-      (data.keyword_groups || []).forEach(group => {
-        const card = document.createElement("article");
-        card.className = "group-card";
-
-        const keywordsHtml = (group.keywords || []).map(kw => {
-          const query = kw.pinterest_query || kw.term_en;
-          const term = kw.term_en || query;
-          return `
-            <div class="keyword-item">
-              <div class="keyword-term">${escapeHtml(term)}</div>
-              <p class="keyword-why">${escapeHtml(kw.why_ar || "")}</p>
-              <div class="keyword-actions">
-                <button type="button" class="btn-sm" data-copy="${escapeHtml(query)}">نسخ</button>
-                <a class="btn-sm pin" href="${pinterestUrl(query)}" target="_blank" rel="noopener">Pinterest ↗</a>
-              </div>
-            </div>
-          `;
-        }).join("");
-
-        card.innerHTML = `
-          <div class="group-head">
-            <span class="group-title">${escapeHtml(group.title_ar || "مجموعة")}</span>
-            ${group.self_ads_key ? `<span class="group-tag">${escapeHtml(group.self_ads_key)}</span>` : ""}
-          </div>
-          <div class="keywords-list">${keywordsHtml}</div>
-        `;
-        groupsContainer.appendChild(card);
-      });
-
-      groupsContainer.querySelectorAll("[data-copy]").forEach(btn => {
-        btn.addEventListener("click", () => copyText(btn.dataset.copy));
-      });
 
       const comboSection = document.getElementById("comboSection");
       const comboGrid = document.getElementById("comboGrid");
@@ -412,17 +554,30 @@
 
       if (combos.length) {
         comboGrid.innerHTML = combos.map(c => `
-          <div class="combo-card">
-            <div class="combo-query">${escapeHtml(c.query_en)}</div>
+          <div class="combo-card" data-style="${escapeHtml(c.style_key || "")}">
+            <div class="combo-top">
+              ${c.category_ar ? `<span class="combo-cat">${escapeHtml(c.category_ar)}</span>` : ""}
+            </div>
+            <div class="combo-query">${highlightTopicInQuery(c.query_en, lastTopicEn)}</div>
+            ${c.prompt_keywords_en ? `
+              <div class="prompt-kw-row">
+                <span class="prompt-kw-label">للبرومبت:</span>
+                <span class="prompt-kw-text">${escapeHtml(c.prompt_keywords_en)}</span>
+                <button type="button" class="btn-sm" data-copy-prompt="${escapeHtml(c.prompt_keywords_en)}">نسخ للبرومبت</button>
+              </div>
+            ` : ""}
             <p class="combo-use">${escapeHtml(c.use_ar || "")}</p>
             <div class="keyword-actions">
-              <button type="button" class="btn-sm" data-copy="${escapeHtml(c.query_en)}">نسخ</button>
-              <a class="btn-sm pin" href="${pinterestUrl(c.query_en)}" target="_blank" rel="noopener">ابحث على Pinterest ↗</a>
+              <button type="button" class="btn-sm" data-copy="${escapeHtml(c.query_en)}">نسخ بحث</button>
+              <a class="btn-sm pin" href="${pinterestUrl(c.query_en)}" target="_blank" rel="noopener">Pinterest ↗</a>
             </div>
           </div>
         `).join("");
         comboGrid.querySelectorAll("[data-copy]").forEach(btn => {
           btn.addEventListener("click", () => copyText(btn.dataset.copy));
+        });
+        comboGrid.querySelectorAll("[data-copy-prompt]").forEach(btn => {
+          btn.addEventListener("click", () => copyText(btn.dataset.copyPrompt));
         });
         comboSection.style.display = "block";
       } else {
@@ -454,7 +609,7 @@
     async function suggest() {
       const idea = ideaInput.value.trim();
       if (!idea) {
-        showError("اكتب مجال العمل أو الفكرة أولاً.");
+        showError("اكتب الموضوع اللي بتدور عليه أولاً.");
         return;
       }
 
@@ -469,8 +624,8 @@
           headers: { "Content-Type": "application/json" },
           body: JSON.stringify({
             idea,
-            style: styleInput.value.trim(),
-            audience: audienceInput.value.trim()
+            audience: audienceInput.value.trim(),
+            styles: getSelectedStyles()
           })
         });
 
@@ -502,8 +657,8 @@
     suggestBtn.addEventListener("click", suggest);
     document.getElementById("clearBtn").addEventListener("click", () => {
       ideaInput.value = "";
-      styleInput.value = "";
       audienceInput.value = "";
+      document.querySelectorAll(".style-chip").forEach(c => c.classList.add("active"));
       ideaInput.dispatchEvent(new Event("input"));
       results.classList.remove("show");
       hideError();
@@ -511,7 +666,6 @@
 
     document.getElementById("exampleBtn").addEventListener("click", () => {
       ideaInput.value = EXAMPLE_IDEA;
-      styleInput.value = EXAMPLE_STYLE;
       audienceInput.value = EXAMPLE_AUDIENCE;
       ideaInput.dispatchEvent(new Event("input"));
     });
