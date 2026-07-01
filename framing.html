@@ -53,8 +53,34 @@
       background: var(--accent-soft); color: var(--accent-2); padding: 0.3rem 0.85rem; border-radius: 99px;
     }
     .ref-image {
-      width: 100%; max-width: 560px; margin: 0 auto 1.5rem; display: block;
+      width: 100%; max-width: 560px; margin: 0 auto; display: block;
       border-radius: var(--radius-sm); border: 1px solid var(--border); box-shadow: var(--shadow);
+    }
+    .ref-visuals {
+      background: var(--surface); border: 1px solid var(--border); border-radius: var(--radius);
+      padding: 1.35rem 1.5rem; margin-bottom: 1.75rem; box-shadow: var(--shadow);
+    }
+    .ref-visuals h2 {
+      font-size: 1.05rem; font-weight: 800; margin-bottom: 0.35rem;
+      display: flex; align-items: center; gap: 0.45rem;
+    }
+    .ref-visuals > p { font-size: 0.88rem; color: var(--muted); margin-bottom: 1.25rem; }
+    .ref-figures { display: flex; flex-direction: column; gap: 1.35rem; }
+    .ref-figure { margin: 0; }
+    .ref-figure img {
+      width: 100%; border-radius: var(--radius-sm); border: 1px solid var(--border);
+      box-shadow: var(--shadow); background: #fff;
+    }
+    .ref-figure figcaption {
+      font-size: 0.82rem; color: var(--muted); margin-top: 0.55rem; line-height: 1.65;
+    }
+    .ref-figure figcaption strong { color: var(--text); font-weight: 700; }
+    .ref-tags {
+      display: flex; flex-wrap: wrap; gap: 0.35rem; margin-top: 0.5rem;
+    }
+    .ref-tag {
+      font-size: 0.7rem; font-weight: 700; padding: 0.2rem 0.55rem; border-radius: 99px;
+      background: var(--accent-soft); color: var(--accent-2); direction: ltr;
     }
     .intro-box {
       background: var(--surface); border: 1px solid var(--border); border-radius: var(--radius);
@@ -188,10 +214,36 @@
     </header>
 
     <div class="intro-box">
-      <p><strong>ليه مهمة؟</strong> نفس الشخصية في نفس المكان — لكن لقطة <a href="https://www.pinterest.com/search/pins/?q=close%20up%20shot" class="pinterest-link" target="_blank" rel="noopener noreferrer">Close-up</a> تُظهر التعبير، و<a href="https://www.pinterest.com/search/pins/?q=wide%20shot%20photography" class="pinterest-link" target="_blank" rel="noopener noreferrer">Wide Shot</a> تُظهر البيئة. الذكاء الاصطناعي محتاج يعرف إنت عايز أنهي إحساس. <a href="#quiz" style="color:var(--accent-2);font-weight:700;text-decoration:none;">جرّب التمرين ↓</a></p>
+      <p><strong>ليه مهمة؟</strong> نفس الشخصية في نفس المكان — لكن لقطة <a href="https://www.pinterest.com/search/pins/?q=close%20up%20shot" class="pinterest-link" target="_blank" rel="noopener noreferrer">Close-up</a> تُظهر التعبير، و<a href="https://www.pinterest.com/search/pins/?q=wide%20shot%20photography" class="pinterest-link" target="_blank" rel="noopener noreferrer">Wide Shot</a> تُظهر البيئة. الذكاء الاصطناعي محتاج يعرف إنت عايز أنهي إحساس. راجع المرجع البصري تحت ثم <a href="#quiz" style="color:var(--accent-2);font-weight:700;text-decoration:none;">جرّب التمرين ↓</a></p>
     </div>
 
-    <img src="assets/framing-shots.png" alt="مرجع أنواع اللقطات السبعة" class="ref-image" loading="lazy" />
+    <section class="ref-visuals" aria-label="مرجع بصري لأنواع اللقطات">
+      <h2><span>📷</span> مرجع بصري — أنواع اللقطات</h2>
+      <p>الصورتين دول بتلخّصوا أشهر أنواع اللقطات — استخدمهم كمرجع لما تكتب البرومبت أو تدور على Pinterest.</p>
+      <div class="ref-figures">
+        <figure class="ref-figure">
+          <img src="assets/framing-shots-diagram.png" alt="مخطط حدود اللقطات على الجسم — من Close Up إلى Long Shot" loading="lazy" />
+          <figcaption>
+            <strong>مخطط الحدود</strong> — كل إطار يوضّح قد إيه من الجسم يدخل في اللقطة: من <span dir="ltr">CU</span> (الوجه) لحد <span dir="ltr">LS</span> (الجسم كامل).
+            <span class="ref-tags">
+              <span class="ref-tag">CU</span><span class="ref-tag">MCU</span><span class="ref-tag">MS</span>
+              <span class="ref-tag">3/4</span><span class="ref-tag">MLS</span><span class="ref-tag">LS</span>
+            </span>
+          </figcaption>
+        </figure>
+        <figure class="ref-figure">
+          <img src="assets/framing-shots-grid.png" alt="شبكة أمثلة لأنواع اللقطات وزوايا الكاميرا" loading="lazy" />
+          <figcaption>
+            <strong>أمثلة حقيقية</strong> — نفس الموضوع بلقطات مختلفة من <span dir="ltr">ELS</span> لـ <span dir="ltr">ECU</span>، مع زوايا كاميرا من تحت (<span dir="ltr">Low Angle</span>) وفوق (<span dir="ltr">High Angle</span>).
+            <span class="ref-tags">
+              <span class="ref-tag">ELS</span><span class="ref-tag">LS</span><span class="ref-tag">MLS</span>
+              <span class="ref-tag">MS</span><span class="ref-tag">MCU</span><span class="ref-tag">CU</span>
+              <span class="ref-tag">ECU</span><span class="ref-tag">Low Angle</span><span class="ref-tag">High Angle</span>
+            </span>
+          </figcaption>
+        </figure>
+      </div>
+    </section>
 
     <div class="detail-list">
       <article class="detail-card">
@@ -231,10 +283,22 @@
         <div class="prompt-example"><a href="https://www.pinterest.com/search/pins/?q=wide%20shot" class="pinterest-link" target="_blank" rel="noopener noreferrer">wide shot</a>, <a href="https://www.pinterest.com/search/pins/?q=full%20body%20visible" class="pinterest-link" target="_blank" rel="noopener noreferrer">full body visible</a>, <a href="https://www.pinterest.com/search/pins/?q=subject%20centered%20in%20environment" class="pinterest-link" target="_blank" rel="noopener noreferrer">subject centered in environment</a>, <a href="https://www.pinterest.com/search/pins/?q=ocean%20pier%20background" class="pinterest-link" target="_blank" rel="noopener noreferrer">ocean and pier in background</a></div>
       </article>
       <article class="detail-card">
-        <div class="detail-head"><a href="https://www.pinterest.com/search/pins/?q=ultra-wide%20shot%20cinematic" class="pinterest-link en" target="_blank" rel="noopener noreferrer">ULTRA-WIDE SHOT</a><span class="ar">لقطة واسعة جداً</span></div>
-        <p>الموضوع صغير والبيئة هي البطلة. مثالية للمشاهد السينمائية والمناظر الطبيعية.</p>
+        <div class="detail-head"><a href="https://www.pinterest.com/search/pins/?q=ultra-wide%20shot%20cinematic" class="pinterest-link en" target="_blank" rel="noopener noreferrer">ULTRA-WIDE / ELS</a><span class="ar">لقطة واسعة جداً / بعيدة جداً</span></div>
+        <p>الموضوع صغير والبيئة هي البطلة. مثالية للمشاهد السينمائية والمناظر الطبيعية — زي <strong>ELS</strong> في المرجع البصري.</p>
         <p class="prompt-label">مثال في البرومبت:</p>
-        <div class="prompt-example"><a href="https://www.pinterest.com/search/pins/?q=ultra-wide%20shot" class="pinterest-link" target="_blank" rel="noopener noreferrer">ultra-wide shot</a>, <a href="https://www.pinterest.com/search/pins/?q=tiny%20figure%20vast%20landscape" class="pinterest-link" target="_blank" rel="noopener noreferrer">tiny figure in vast landscape</a>, <a href="https://www.pinterest.com/search/pins/?q=dramatic%20scale%20photography" class="pinterest-link" target="_blank" rel="noopener noreferrer">dramatic scale</a>, <a href="https://www.pinterest.com/search/pins/?q=epic%20cinematic%20composition" class="pinterest-link" target="_blank" rel="noopener noreferrer">epic cinematic composition</a></div>
+        <div class="prompt-example"><a href="https://www.pinterest.com/search/pins/?q=ultra-wide%20shot" class="pinterest-link" target="_blank" rel="noopener noreferrer">ultra-wide shot</a>, <a href="https://www.pinterest.com/search/pins/?q=extreme%20long%20shot" class="pinterest-link" target="_blank" rel="noopener noreferrer">extreme long shot</a>, <a href="https://www.pinterest.com/search/pins/?q=tiny%20figure%20vast%20landscape" class="pinterest-link" target="_blank" rel="noopener noreferrer">tiny figure in vast landscape</a>, <a href="https://www.pinterest.com/search/pins/?q=epic%20cinematic%20composition" class="pinterest-link" target="_blank" rel="noopener noreferrer">epic cinematic composition</a></div>
+      </article>
+      <article class="detail-card">
+        <div class="detail-head"><a href="https://www.pinterest.com/search/pins/?q=low%20angle%20shot" class="pinterest-link en" target="_blank" rel="noopener noreferrer">LOW ANGLE</a><span class="ar">زاوية من تحت</span></div>
+        <p>الكاميرا تحت مستوى عين الموضوع وتطلع لفوق — يخلّي الشخصية تبدو أقوى وأضخم وأكثر دراما.</p>
+        <p class="prompt-label">مثال في البرومبت:</p>
+        <div class="prompt-example"><a href="https://www.pinterest.com/search/pins/?q=low%20angle%20shot" class="pinterest-link" target="_blank" rel="noopener noreferrer">low angle shot</a>, <a href="https://www.pinterest.com/search/pins/?q=camera%20looking%20up%20at%20subject" class="pinterest-link" target="_blank" rel="noopener noreferrer">camera looking up at subject</a>, <a href="https://www.pinterest.com/search/pins/?q=heroic%20perspective%20portrait" class="pinterest-link" target="_blank" rel="noopener noreferrer">heroic perspective</a>, <a href="https://www.pinterest.com/search/pins/?q=dramatic%20low%20angle%20portrait" class="pinterest-link" target="_blank" rel="noopener noreferrer">dramatic low angle portrait</a></div>
+      </article>
+      <article class="detail-card">
+        <div class="detail-head"><a href="https://www.pinterest.com/search/pins/?q=high%20angle%20shot" class="pinterest-link en" target="_blank" rel="noopener noreferrer">HIGH ANGLE</a><span class="ar">زاوية من فوق</span></div>
+        <p>الكاميرا فوق الموضوع وتطلع لتحت — يخلّي الشخصية تبدو أصغر أو أكثر ضعفاً أو غرقانة في المكان.</p>
+        <p class="prompt-label">مثال في البرومبت:</p>
+        <div class="prompt-example"><a href="https://www.pinterest.com/search/pins/?q=high%20angle%20shot" class="pinterest-link" target="_blank" rel="noopener noreferrer">high angle shot</a>, <a href="https://www.pinterest.com/search/pins/?q=overhead%20view%20portrait" class="pinterest-link" target="_blank" rel="noopener noreferrer">overhead view</a>, <a href="https://www.pinterest.com/search/pins/?q=camera%20looking%20down%20at%20subject" class="pinterest-link" target="_blank" rel="noopener noreferrer">camera looking down at subject</a>, <a href="https://www.pinterest.com/search/pins/?q=vulnerable%20perspective%20photography" class="pinterest-link" target="_blank" rel="noopener noreferrer">vulnerable perspective</a></div>
       </article>
     </div>
 
