@@ -1273,6 +1273,7 @@
         <a href="analyzer.html" class="nav-link">٢ · تحليل برومبت</a>
         <a href="vision.html" class="nav-link">٢ · تحليل صورة</a>
         <a href="tool.html" class="nav-link active">٣ · بناء البرومبت</a>
+        <a href="master-prompt.html" class="nav-link">👑 القالب</a>
       </div>
     </nav>
 
@@ -1308,7 +1309,7 @@
       <div class="tool-panel" id="toolPanel">
       <div class="tool-panel-header">
         <h2>الأداة ٣ · بناء البرومبت</h2>
-        <p>بعد التغذية البصرية والتحليل — اختر كل مكوّن وشاهد طبقات الصورة تتكوّن، ثم ولّد Master Prompt</p>
+        <p>بعد التغذية البصرية والتحليل — اختر كل مكوّن وولّد البرومبت. راجع <a href="master-prompt.html" style="color:var(--accent);font-weight:700;text-decoration:none;">قالب Master Prompt</a> لفهم الهيكل.</p>
       </div>
 
       <div class="principle-list" id="principleList"></div>
@@ -1318,7 +1319,7 @@
           <div class="spice-icon">🧂</div>
           <div>
             <h3>كلمات التوابل — Quality Keywords</h3>
-            <p>كلمات ترفع الواقعية والدقة في أي برومبت. اختر ما يناسبك — تتضاف تلقائياً في نهاية الـ Master Prompt.</p>
+            <p>كلمات ترفع الواقعية والدقة — تتضاف في البرومبت فقط لو اخترتها.</p>
           </div>
         </div>
         <div class="spice-grid" id="spiceGrid"></div>
@@ -1989,50 +1990,43 @@
     }
 
     function buildMasterPrompt(data, keywords) {
-      const {
-        subject, environment, lighting, framing, aspect, details, style
-      } = data;
+      const { subject, environment, lighting, framing, aspect, details, style } = data;
+      const lines = [];
 
-      const composition = framing || "a balanced medium shot";
-      const cameraSettings = aspect
-        ? `${aspect}, professional DSLR quality, high resolution`
-        : "professional camera settings, high resolution";
-      const filmGrain = deriveFilmGrain(style, lighting);
-      const distortion = deriveDistortion(framing);
-      const lensArtifacts = details
-        ? `subtle natural lens character, ${details}`
-        : "subtle natural lens character";
-      const depthOfField = deriveDepthOfField(framing);
-      const subjectLine = subject || "subject with natural expression and authentic presence";
-      const location = environment || "a visually compelling location";
-      const timeLighting = lighting || "natural daylight";
-      const envFeel = deriveEnvironmentFeel(environment);
-      const action = "posed naturally for the camera";
-      const props = details || "none";
-      const lightingSetup = lighting || "soft, balanced natural lighting";
-      const tone = deriveTone(style, lighting);
-      const colorPalette = deriveColorPalette(lighting, environment);
-      const visualStyle = style || "cinematic photorealistic";
-      const colorGrading = deriveColorGrading(style, lighting);
-
-      let prompt = `Generate a cinematic photorealistic image in ${composition} with ${cameraSettings}.
-Apply ${filmGrain}.
-Lens effects include ${distortion}, ${lensArtifacts}, and ${depthOfField}.
-The subject is a ${subjectLine}.
-The scene is set in ${location} at ${timeLighting}.
-Environment should feel ${envFeel}.
-Subject action: ${action}.
-Props: ${props}.
-Lighting: ${lightingSetup}.
-Tone: ${tone}.
-Color palette: ${colorPalette}.
-Style: ${visualStyle} with ${colorGrading}.`;
-
-      if (keywords.length > 0) {
-        prompt += `\nQuality keywords: ${keywords.join(", ")}.`;
+      if (framing || aspect || style) {
+        let open = style ? `Generate a ${style} image` : "Generate a photorealistic image";
+        if (framing) open += ` in ${framing}`;
+        if (aspect) open += ` with ${aspect}`;
+        lines.push(open + ".");
       }
 
-      return prompt;
+      if (framing) {
+        const lensParts = [];
+        const distortion = deriveDistortion(framing);
+        if (distortion && distortion !== "none") lensParts.push(distortion);
+        lensParts.push(deriveDepthOfField(framing));
+        if (lensParts.length) {
+          lines.push(`Lens effects include ${lensParts.join(", ")}.`);
+        }
+      }
+
+      if (subject) lines.push(`The subject is ${subject}.`);
+
+      if (environment && lighting) {
+        lines.push(`The scene is set in ${environment} at ${lighting}.`);
+      } else if (environment) {
+        lines.push(`The scene is set in ${environment}.`);
+      } else if (lighting) {
+        lines.push(`Lighting: ${lighting}.`);
+      }
+
+      if (details) lines.push(`Props and details: ${details}.`);
+
+      if (keywords.length > 0) {
+        lines.push(`Quality keywords: ${keywords.join(", ")}.`);
+      }
+
+      return lines.join("\n");
     }
 
     function generatePrompt() {

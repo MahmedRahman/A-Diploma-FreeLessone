@@ -251,13 +251,13 @@
     .quick-tool[data-t="analyze"]::before { background: linear-gradient(90deg, #059669, #10b981); }
     .quick-tool[data-t="vision"]::before { background: linear-gradient(90deg, #10a37f, #1a7f64); }
     .quick-tool[data-t="pinterest"]::before { background: linear-gradient(90deg, #bd081c, #e60023); }
-    .quick-tool[data-t="game"]::before { background: linear-gradient(90deg, #d97706, #f59e0b); }
+    .quick-tool[data-t="master"]::before { background: linear-gradient(90deg, #d97706, #f59e0b); }
 
     .quick-tool[data-t="build"]:hover { border-color: #93a8fd; }
     .quick-tool[data-t="analyze"]:hover { border-color: #6ee7b7; }
     .quick-tool[data-t="vision"]:hover { border-color: #6ee7b7; }
     .quick-tool[data-t="pinterest"]:hover { border-color: #fca5a5; }
-    .quick-tool[data-t="game"]:hover { border-color: #fcd34d; }
+    .quick-tool[data-t="master"]:hover { border-color: #fcd34d; }
 
     .quick-tool-icon { font-size: 1.65rem; }
     .quick-tool-step {
@@ -276,9 +276,9 @@
     .quick-tool[data-t="analyze"] .quick-tool-cta { color: #059669; }
     .quick-tool[data-t="vision"] .quick-tool-cta { color: #10a37f; }
     .quick-tool[data-t="pinterest"] .quick-tool-cta { color: #bd081c; }
-    .quick-tool[data-t="game"] .quick-tool-cta { color: #d97706; }
+    .quick-tool[data-t="master"] .quick-tool-cta { color: #d97706; }
 
-    /* Section */
+    .master-spotlight { margin-bottom: 2rem; }
     .section {
       margin-bottom: 2rem;
     }
@@ -367,61 +367,6 @@
       display: grid;
       place-items: center;
       flex-shrink: 0;
-    }
-
-    /* Game promo banner */
-    .game-promo {
-      display: flex;
-      flex-wrap: wrap;
-      align-items: center;
-      gap: 1rem;
-      background: linear-gradient(135deg, #fffbeb 0%, #fef3c7 50%, #fde68a 100%);
-      border: 2px solid #f59e0b;
-      border-radius: var(--radius);
-      padding: 1.25rem 1.5rem;
-      margin-bottom: 2rem;
-      text-decoration: none;
-      color: inherit;
-      box-shadow: 0 10px 32px rgba(245, 158, 11, 0.18);
-      transition: transform 0.25s, box-shadow 0.25s;
-    }
-
-    .game-promo:hover {
-      transform: translateY(-3px);
-      box-shadow: 0 16px 40px rgba(245, 158, 11, 0.28);
-    }
-
-    .game-promo-icon {
-      font-size: 2.25rem;
-      flex-shrink: 0;
-    }
-
-    .game-promo-body {
-      flex: 1;
-      min-width: 200px;
-    }
-
-    .game-promo-body strong {
-      display: block;
-      font-size: 1.05rem;
-      color: #92400e;
-      margin-bottom: 0.25rem;
-    }
-
-    .game-promo-body p {
-      font-size: 0.88rem;
-      color: #b45309;
-      line-height: 1.6;
-    }
-
-    .game-promo-cta {
-      font-size: 0.9rem;
-      font-weight: 800;
-      color: #fff;
-      background: linear-gradient(135deg, #d97706, #f59e0b);
-      padding: 0.6rem 1.15rem;
-      border-radius: 99px;
-      white-space: nowrap;
     }
 
     /* Why photography */
@@ -1410,14 +1355,24 @@
           <p>املأ ٧ مبادئ SELF ADS خطوة بخطوة وانسخ Master Prompt جاهز.</p>
           <span class="quick-tool-cta">ابنِ برومبتك ←</span>
         </a>
-        <a href="game.html" class="quick-tool" data-t="game">
-          <span class="quick-tool-icon">🎮</span>
-          <h3>لعبة SELF ADS</h3>
-          <p>رتّب الحروف بالترتيب الصحيح واكسب كود خصم إضافي.</p>
-          <span class="quick-tool-cta">العب الآن ←</span>
+        <a href="master-prompt.html" class="quick-tool" data-t="master">
+          <span class="quick-tool-step">القالب الذهبي</span>
+          <span class="quick-tool-icon">👑</span>
+          <h3>قالب Master Prompt</h3>
+          <p>الهيكل الكامل للبرومبت — اقرأ الشرح وانسخ القالب قبل ما تبني برومبتك.</p>
+          <span class="quick-tool-cta">افتح القالب ←</span>
         </a>
       </div>
     </section>
+
+    <div class="master-spotlight">
+      <a href="master-prompt.html" class="master-prompt-feature">
+        <span class="mp-icon">👑</span>
+        <h3>Master Prompt — القالب المتكامل</h3>
+        <p>شوف القالب سطر بسطر — كل جزء مربوط بعنصر من SELF ADS. مرجعك قبل وبعد بناء البرومبت.</p>
+        <span class="mp-cta">اقرأ القالب والشرح ←</span>
+      </a>
+    </div>
 
     <!-- Roadmap -->
     <nav class="roadmap" aria-label="خريطة المحتوى">
@@ -1447,23 +1402,13 @@
       <div class="roadmap-group">
         <p class="roadmap-group-title">الأدوات والتطبيق</p>
         <ol class="roadmap-list">
+          <li><a href="master-prompt.html"><span class="roadmap-num">👑</span> قالب Master Prompt</a></li>
           <li><a href="#quick-tools"><span class="roadmap-num">⚡</span> الأدوات السريعة</a></li>
           <li><a href="#free-tools"><span class="roadmap-num">🎨</span> أدوات توليد مجانية</a></li>
           <li><a href="#tool"><span class="roadmap-num">🛠️</span> جاهز تطبّق؟</a></li>
-          <li><a href="game.html"><span class="roadmap-num">🎮</span> لعبة الخصم</a></li>
         </ol>
       </div>
     </nav>
-
-    <!-- Game promo -->
-    <a href="game.html" class="game-promo" id="game">
-      <span class="game-promo-icon">🎮</span>
-      <div class="game-promo-body">
-        <strong>لعبة SELF ADS — اكسب كود خصم إضافي!</strong>
-        <p>رتّب الحروف بالترتيب الصح (S · E · L · F · A · D · S) وافتح كود الخصم.</p>
-      </div>
-      <span class="game-promo-cta">العب الآن ←</span>
-    </a>
 
     <!-- Why Photography -->
     <section class="section" id="why">
@@ -1863,25 +1808,20 @@
     <!-- Tool CTA -->
     <div class="tool-cta" id="tool">
       <h2>🚀 جاهز تطبّق؟</h2>
-      <p class="tool-cta-sub">١ تغذية بصرية ← ٢ تحليل برومبت أو صورة ← ٣ بناء البرومبت</p>
+      <p class="tool-cta-sub">👑 قالب Master Prompt ← ١ تغذية بصرية ← ٢ تحليل ← ٣ بناء البرومبت</p>
 
-      <a href="master-prompt.html" class="master-prompt-feature">
-        <span class="mp-icon">👑</span>
-        <h3>Master Prompt — البرومبت المتكامل</h3>
-        <p>القالب الذهبي اللي بيجمع كل عناصر SELF ADS في برومبت واحد جاهز للنسخ والتوليد.</p>
-        <span class="mp-cta">اقرأ الشرح الكامل ←</span>
-      </a>
+      <p class="tool-cta-tools-label">الأدوات والقالب</p>
 
-      <p class="tool-cta-tools-label">الأدوات التفاعلية</p>
       <div class="tool-cta-grid">
+        <a href="master-prompt.html" class="tool-cta-link gold">👑 قالب Master Prompt</a>
         <a href="pinterest.html" class="tool-cta-link red">١ · التغذية البصرية</a>
         <a href="analyzer.html" class="tool-cta-link green">٢ · تحليل برومبت</a>
         <a href="vision.html" class="tool-cta-link teal">٢ · تحليل صورة</a>
         <a href="tool.html" class="tool-cta-link blue">٣ · بناء البرومبت</a>
       </div>
-      <p>ابدأ بـ <a href="pinterest.html"
-          style="color:#bd081c;font-weight:700;text-decoration:none;">التغذية البصرية</a> ثم <a href="tool.html"
-          style="color:var(--accent);font-weight:700;text-decoration:none;">ابنِ برومبتك</a></p>
+      <p>راجع <a href="master-prompt.html"
+          style="color:#d97706;font-weight:700;text-decoration:none;">قالب Master Prompt</a> ثم ابدأ بـ <a href="pinterest.html"
+          style="color:#bd081c;font-weight:700;text-decoration:none;">التغذية البصرية</a></p>
     </div>
 
     <!-- Golden Rule -->
@@ -1902,8 +1842,7 @@
         style="color:var(--accent);text-decoration:none;">📌 التغذية البصرية</a> · <a href="analyzer.html"
         style="color:var(--accent);text-decoration:none;">🤖 تحليل برومبت</a> · <a href="vision.html"
         style="color:var(--accent);text-decoration:none;">🖼️ تحليل صورة</a> · <a href="tool.html"
-        style="color:var(--accent);text-decoration:none;">🛠️ بناء البرومبت</a> · <a href="game.html"
-        style="color:var(--accent);text-decoration:none;">🎮 اللعبة</a></p>
+        style="color:var(--accent);text-decoration:none;">🛠️ بناء البرومبت</a></p>
 
   </div>
 </body>
